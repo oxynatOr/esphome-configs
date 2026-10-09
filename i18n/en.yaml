@@ -1,0 +1,8 @@
+# Purpose:       Reference language. Contains every user-visible text key.
+# Requires:      none
+# Chip:          any
+# Substitutions: all txt_* keys of the repository
+substitutions:
+  txt_restart: Restart
+  txt_uptime: Uptime
+  txt_wifi_signal: WiFi Signal

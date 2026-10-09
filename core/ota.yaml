@@ -1,0 +1,6 @@
+# Purpose:       Over-the-air updates via the ESPHome platform.
+# Requires:      none
+# Chip:          any
+# Substitutions: none
+ota:
+  - platform: esphome

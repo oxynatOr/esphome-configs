@@ -1,0 +1,21 @@
+# Purpose:       <one line: which device / revision this adoptable config is for>
+# Requires:      core/api.yaml, core/ota.yaml, <revision file>, i18n/en.yaml
+# Chip:          <set by the revision file>
+# Substitutions: none
+#
+# Replace OWNER, <name> and the tag. All @refs must use the same release tag, never @main.
+esphome:
+  name: <name>
+  project:
+    name: "ioxys.<name>"
+    version: "0.0.0"
+
+dashboard_import:
+  package_import_url: github://OWNER/ioxys-esphome/projects/<name>.yaml@v0.0.0
+  import_full_config: false
+
+packages:
+  api: github://OWNER/ioxys-esphome/core/api.yaml@v0.0.0
+  ota: github://OWNER/ioxys-esphome/core/ota.yaml@v0.0.0
+  i18n_base: github://OWNER/ioxys-esphome/i18n/en.yaml@v0.0.0
+  # i18n_lang: github://OWNER/ioxys-esphome/i18n/de.yaml@v0.0.0   # remove = English

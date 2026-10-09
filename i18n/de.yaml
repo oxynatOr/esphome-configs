@@ -1,0 +1,8 @@
+# Purpose:       German texts. Overrides en.yaml; missing keys fall back to English.
+# Requires:      i18n/en.yaml included before this file
+# Chip:          any
+# Substitutions: subset of the txt_* keys in en.yaml
+substitutions:
+  txt_restart: Neustart
+  txt_uptime: Betriebszeit
+  txt_wifi_signal: WLAN-Signal

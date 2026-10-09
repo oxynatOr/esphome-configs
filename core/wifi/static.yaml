@@ -1,0 +1,22 @@
+# Purpose:       WiFi with a static IP and fallback access point. Override the addresses in your own config.
+# Requires:      secrets wifi_ssid, wifi_password
+# Chip:          any
+# Substitutions:
+#   wifi_static_ip: 192.0.2.10    - device address (documentation range, replace it)
+#   wifi_gateway:   192.0.2.1     - gateway address
+#   wifi_subnet:    255.255.255.0 - subnet mask
+substitutions:
+  wifi_static_ip: 192.0.2.10
+  wifi_gateway: 192.0.2.1
+  wifi_subnet: 255.255.255.0
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  manual_ip:
+    static_ip: ${wifi_static_ip}
+    gateway: ${wifi_gateway}
+    subnet: ${wifi_subnet}
+  ap:
+
+captive_portal:

@@ -1,0 +1,12 @@
+# Purpose:       ESP32 platform and board selection.
+# Requires:      none
+# Chip:          esp32
+# Substitutions:
+#   esp32_board: esp32dev - PlatformIO board name
+substitutions:
+  esp32_board: esp32dev
+
+esp32:
+  board: ${esp32_board}
+  framework:
+    type: esp-idf

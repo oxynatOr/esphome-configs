@@ -1,0 +1,9 @@
+# Purpose:       <one line: what this module does>
+# Requires:      <other modules / secrets, or none>
+# Chip:          <any | esp32 | esp8266 | rp2040>
+# Substitutions:
+#   <module>_<name>: <default> - <description>
+#
+# Rules: see CONVENTIONS.md. Visible texts come from i18n (${txt_*}), ids are snake_case.
+substitutions:
+  <module>_<name>: <default>

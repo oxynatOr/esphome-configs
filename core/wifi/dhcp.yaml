@@ -1,0 +1,10 @@
+# Purpose:       WiFi with DHCP and fallback access point. For non-adopted use; an adoption stub brings its own wifi block.
+# Requires:      secrets wifi_ssid, wifi_password
+# Chip:          any
+# Substitutions: none
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  ap:
+
+captive_portal:

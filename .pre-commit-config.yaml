@@ -1,0 +1,17 @@
+repos:
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.35.1
+    hooks:
+      - id: yamllint
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.18.4
+    hooks:
+      - id: gitleaks
+  - repo: local
+    hooks:
+      - id: repo-conventions
+        name: repository conventions
+        entry: python scripts/check.py
+        language: system
+        pass_filenames: false
+        always_run: true

@@ -1,0 +1,24 @@
+name: lint
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      # TODO: pin the esphome version once the first release is tested
+      - run: pip install esphome yamllint pyyaml
+      - run: cp secrets.example.yaml secrets.yaml
+      - run: yamllint .
+      - run: python scripts/check.py --esphome
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

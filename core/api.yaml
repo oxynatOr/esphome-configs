@@ -1,0 +1,5 @@
+# Purpose:       Native API for Home Assistant. The encryption key comes from the adoption stub / device config.
+# Requires:      none
+# Chip:          any
+# Substitutions: none
+api:
