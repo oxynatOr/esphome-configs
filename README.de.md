@@ -20,8 +20,8 @@ Wiederverwendbare ESPHome-Packages und adoptierbare Geräte-Configs. [English](R
 Das Sprach-Package nach dem Basis-Package einbinden, für Englisch die Zeile weglassen:
 ```yaml
 packages:
-  i18n_base: github://OWNER/esphome-configs/i18n/en.yaml@<tag>
-  i18n_lang: github://OWNER/esphome-configs/i18n/de.yaml@<tag>
+  i18n_base: github://oxynatOr/esphome-configs/i18n/en.yaml@<tag>
+  i18n_lang: github://oxynatOr/esphome-configs/i18n/de.yaml@<tag>
 ```
 Home-Assistant-Entity-IDs entstehen aus dem Namen, ein in anderer Sprache adoptiertes Gerät bekommt andere IDs.
 

@@ -7,10 +7,10 @@ esphome:
   friendly_name: Shelly PM Mini Gen3
   project:
     name: "ioxys.pm-mini-v3"
-    version: "0.0.0"
+    version: "0.1.0"
 
 dashboard_import:
-  package_import_url: github://OWNER/esphome-configs/projects/pm-mini/v3.yaml@v0.0.0
+  package_import_url: github://oxynatOr/esphome-configs/projects/pm-mini/v3.yaml@v0.1.0
   import_full_config: false
 
 wifi:
@@ -19,14 +19,14 @@ wifi:
 captive_portal:
 
 packages:
-  hardware: github://OWNER/esphome-configs/hardware/meters/pm-mini/v3.yaml@v0.0.0
-  i18n_base: github://OWNER/esphome-configs/i18n/en.yaml@v0.0.0
-  logger: github://OWNER/esphome-configs/core/logger.yaml@v0.0.0
-  api: github://OWNER/esphome-configs/core/api.yaml@v0.0.0
-  ota: github://OWNER/esphome-configs/core/ota.yaml@v0.0.0
-  safe_mode: github://OWNER/esphome-configs/core/safe-mode.yaml@v0.0.0
-  time: github://OWNER/esphome-configs/core/time-homeassistant.yaml@v0.0.0
-  energy: github://OWNER/esphome-configs/hardware/power-monitoring/energy-counters.yaml@v0.0.0
-  diag_uptime: github://OWNER/esphome-configs/hardware/diagnostics/uptime.yaml@v0.0.0
-  diag_wifi: github://OWNER/esphome-configs/hardware/diagnostics/wifi.yaml@v0.0.0
-  diag_esp32: github://OWNER/esphome-configs/hardware/diagnostics/esp32.yaml@v0.0.0
+  hardware: github://oxynatOr/esphome-configs/hardware/meters/pm-mini/v3.yaml@v0.1.0
+  i18n_base: github://oxynatOr/esphome-configs/i18n/en.yaml@v0.1.0
+  logger: github://oxynatOr/esphome-configs/core/logger.yaml@v0.1.0
+  api: github://oxynatOr/esphome-configs/core/api.yaml@v0.1.0
+  ota: github://oxynatOr/esphome-configs/core/ota.yaml@v0.1.0
+  safe_mode: github://oxynatOr/esphome-configs/core/safe-mode.yaml@v0.1.0
+  time: github://oxynatOr/esphome-configs/core/time-homeassistant.yaml@v0.1.0
+  energy: github://oxynatOr/esphome-configs/hardware/power-monitoring/energy-counters.yaml@v0.1.0
+  diag_uptime: github://oxynatOr/esphome-configs/hardware/diagnostics/uptime.yaml@v0.1.0
+  diag_wifi: github://oxynatOr/esphome-configs/hardware/diagnostics/wifi.yaml@v0.1.0
+  diag_esp32: github://oxynatOr/esphome-configs/hardware/diagnostics/esp32.yaml@v0.1.0

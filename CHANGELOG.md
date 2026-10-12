@@ -5,6 +5,8 @@ All notable changes are listed here. Versions follow SemVer, tags look like `v1.
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-10-12
+
 ### Added
 - Core packages: api, ota, safe mode, logger, preferences, SNTP and Home Assistant time, WiFi (DHCP, static), I2C, UART.
 - Diagnostics: uptime and version, WiFi, ESP32 (heap, chip temperature), Pico, debug (with and without PSRAM).

@@ -11,8 +11,8 @@ substitutions:
   hlw8012_cf1_pin: GPIO5
 
 packages:
-  board: github://OWNER/esphome-configs/hardware/boards/esp8266.yaml@v0.0.0
-  meter: github://OWNER/esphome-configs/hardware/power-monitoring/hlw8012.yaml@v0.0.0
+  board: github://oxynatOr/esphome-configs/hardware/boards/esp8266.yaml@v0.1.0
+  meter: github://oxynatOr/esphome-configs/hardware/power-monitoring/hlw8012.yaml@v0.1.0
 
 light:
   - platform: status_led

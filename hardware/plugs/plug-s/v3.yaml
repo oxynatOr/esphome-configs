@@ -20,8 +20,8 @@ substitutions:
   plug_led_restore_mode: RESTORE_DEFAULT_ON
 
 packages:
-  bl0942: github://OWNER/esphome-configs/hardware/power-monitoring/bl0942.yaml@v0.0.0
-  ntc: github://OWNER/esphome-configs/hardware/sensors/ntc-temperature.yaml@v0.0.0
+  bl0942: github://oxynatOr/esphome-configs/hardware/power-monitoring/bl0942.yaml@v0.1.0
+  ntc: github://oxynatOr/esphome-configs/hardware/sensors/ntc-temperature.yaml@v0.1.0
 
 esp32:
   board: esp32-c3-devkitm-1

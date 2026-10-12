@@ -14,8 +14,8 @@ substitutions:
   meross_led_green_pin: GPIO14
 
 packages:
-  board: github://OWNER/esphome-configs/hardware/boards/esp8266.yaml@v0.0.0
-  meter: github://OWNER/esphome-configs/hardware/power-monitoring/cse7766.yaml@v0.0.0
+  board: github://oxynatOr/esphome-configs/hardware/boards/esp8266.yaml@v0.1.0
+  meter: github://oxynatOr/esphome-configs/hardware/power-monitoring/cse7766.yaml@v0.1.0
 
 binary_sensor:
   - platform: gpio
