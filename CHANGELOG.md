@@ -18,4 +18,4 @@ All notable changes are listed here. Versions follow SemVer, tags look like `v1.
   NOUS A1T, Gosund SP1, Meross-style CSE7766 plug.
 - UI: colour palettes.
 - Languages: English reference and German overrides.
-- Tooling: `scripts/check.py`, `scripts/bump-tag.py`, `scripts/gen-catalog.py`, templates, Claude skill, hook and reviewer agent.
+- Tooling: `scripts/check.py`, `scripts/bump-tag.py`, `scripts/gen-catalog.py` and templates.

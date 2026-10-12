@@ -3,7 +3,11 @@ secrets.yaml
 *.bin
 .venv/
 __pycache__/
-.claude/settings.local.json
+
+# local tooling, not part of the repository
+.claude/
+CLAUDE.md
+scripts/claude-hook.py
 
 # raw import of the previous configs - never commit
 __ESPHOME__/

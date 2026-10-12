@@ -1,7 +1,7 @@
 # Conventions
 
 Single source of truth for this repository. `scripts/check.py` enforces everything that can be checked
-mechanically; whatever it cannot catch is reviewed by the `config-reviewer` agent (`.claude/agents/`).
+mechanically; whatever it cannot catch is checked in review.
 
 ## Where does a new file go?
 1. Works on any device, only with different values (ids, pins, reference values)? -> `hardware/<function>/`,
