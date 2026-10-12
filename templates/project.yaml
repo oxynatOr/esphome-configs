@@ -11,11 +11,11 @@ esphome:
     version: "0.0.0"
 
 dashboard_import:
-  package_import_url: github://OWNER/ioxys-esphome/projects/<name>.yaml@v0.0.0
+  package_import_url: github://OWNER/esphome-configs/projects/<name>.yaml@v0.0.0
   import_full_config: false
 
 packages:
-  api: github://OWNER/ioxys-esphome/core/api.yaml@v0.0.0
-  ota: github://OWNER/ioxys-esphome/core/ota.yaml@v0.0.0
-  i18n_base: github://OWNER/ioxys-esphome/i18n/en.yaml@v0.0.0
-  # i18n_lang: github://OWNER/ioxys-esphome/i18n/de.yaml@v0.0.0   # remove = English
+  api: github://OWNER/esphome-configs/core/api.yaml@v0.0.0
+  ota: github://OWNER/esphome-configs/core/ota.yaml@v0.0.0
+  i18n_base: github://OWNER/esphome-configs/i18n/en.yaml@v0.0.0
+  # i18n_lang: github://OWNER/esphome-configs/i18n/de.yaml@v0.0.0   # remove = English

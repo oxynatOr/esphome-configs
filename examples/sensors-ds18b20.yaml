@@ -8,7 +8,7 @@ logger:
 
 
 packages:
-  board: github://OWNER/ioxys-esphome/hardware/boards/esp32.yaml@v0.0.0
-  i18n: github://OWNER/ioxys-esphome/i18n/en.yaml@v0.0.0
-  one-wire-hub: github://OWNER/ioxys-esphome/hardware/sensors/one-wire-hub.yaml@v0.0.0
-  ds18b20: github://OWNER/ioxys-esphome/hardware/sensors/ds18b20.yaml@v0.0.0
+  board: github://OWNER/esphome-configs/hardware/boards/esp32.yaml@v0.0.0
+  i18n: github://OWNER/esphome-configs/i18n/en.yaml@v0.0.0
+  one-wire-hub: github://OWNER/esphome-configs/hardware/sensors/one-wire-hub.yaml@v0.0.0
+  ds18b20: github://OWNER/esphome-configs/hardware/sensors/ds18b20.yaml@v0.0.0

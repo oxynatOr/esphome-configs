@@ -15,7 +15,7 @@ sensor:
     update_interval: 10s
 
 packages:
-  board: github://OWNER/ioxys-esphome/hardware/boards/rp2040.yaml@v0.0.0
-  i18n: github://OWNER/ioxys-esphome/i18n/en.yaml@v0.0.0
-  pid_fan: github://OWNER/ioxys-esphome/hardware/controllers/pid-fan.yaml@v0.0.0
-  fan_pwm: github://OWNER/ioxys-esphome/hardware/controllers/fan-pwm-rp2040.yaml@v0.0.0
+  board: github://OWNER/esphome-configs/hardware/boards/rp2040.yaml@v0.0.0
+  i18n: github://OWNER/esphome-configs/i18n/en.yaml@v0.0.0
+  pid_fan: github://OWNER/esphome-configs/hardware/controllers/pid-fan.yaml@v0.0.0
+  fan_pwm: github://OWNER/esphome-configs/hardware/controllers/fan-pwm-rp2040.yaml@v0.0.0

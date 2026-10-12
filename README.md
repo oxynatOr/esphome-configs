@@ -1,4 +1,4 @@
-# ioxys-esphome
+# esphome-configs
 
 Reusable ESPHome packages and adoptable device configs. [Deutsch](README.de.md)
 
@@ -20,8 +20,8 @@ Reusable ESPHome packages and adoptable device configs. [Deutsch](README.de.md)
 Add the language package after the base one, remove the line for English:
 ```yaml
 packages:
-  i18n_base: github://OWNER/ioxys-esphome/i18n/en.yaml@<tag>
-  i18n_lang: github://OWNER/ioxys-esphome/i18n/de.yaml@<tag>
+  i18n_base: github://OWNER/esphome-configs/i18n/en.yaml@<tag>
+  i18n_lang: github://OWNER/esphome-configs/i18n/de.yaml@<tag>
 ```
 Entity ids in Home Assistant are derived from the name, so a device adopted in another language gets other ids.
 

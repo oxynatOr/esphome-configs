@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Consistency checks for ioxys-esphome (see CONVENTIONS.md).
+"""Consistency checks for esphome-configs (see CONVENTIONS.md).
 
 Usage: python scripts/check.py [--esphome]
   --esphome  additionally run `esphome config` for every file in projects/ and examples/

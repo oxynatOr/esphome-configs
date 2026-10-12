@@ -12,6 +12,6 @@ i2c:
   scl: GPIO22
 
 packages:
-  board: github://OWNER/ioxys-esphome/hardware/boards/esp32.yaml@v0.0.0
-  i18n: github://OWNER/ioxys-esphome/i18n/en.yaml@v0.0.0
-  bme280: github://OWNER/ioxys-esphome/hardware/sensors/bme280.yaml@v0.0.0
+  board: github://OWNER/esphome-configs/hardware/boards/esp32.yaml@v0.0.0
+  i18n: github://OWNER/esphome-configs/i18n/en.yaml@v0.0.0
+  bme280: github://OWNER/esphome-configs/hardware/sensors/bme280.yaml@v0.0.0

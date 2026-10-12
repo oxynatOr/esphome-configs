@@ -17,8 +17,8 @@ substitutions:
   pm_mini_button_pin: GPIO1
 
 packages:
-  bl0942: github://OWNER/ioxys-esphome/hardware/power-monitoring/bl0942.yaml@v0.0.0
-  ntc: github://OWNER/ioxys-esphome/hardware/sensors/ntc-temperature.yaml@v0.0.0
+  bl0942: github://OWNER/esphome-configs/hardware/power-monitoring/bl0942.yaml@v0.0.0
+  ntc: github://OWNER/esphome-configs/hardware/sensors/ntc-temperature.yaml@v0.0.0
 
 esp32:
   board: esp32-c3-devkitm-1

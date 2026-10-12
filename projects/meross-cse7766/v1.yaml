@@ -10,7 +10,7 @@ esphome:
     version: "0.0.0"
 
 dashboard_import:
-  package_import_url: github://OWNER/ioxys-esphome/projects/meross-cse7766/v1.yaml@v0.0.0
+  package_import_url: github://OWNER/esphome-configs/projects/meross-cse7766/v1.yaml@v0.0.0
   import_full_config: false
 
 wifi:
@@ -19,14 +19,14 @@ wifi:
 captive_portal:
 
 packages:
-  hardware: github://OWNER/ioxys-esphome/hardware/plugs/meross-cse7766/v1.yaml@v0.0.0
-  i18n_base: github://OWNER/ioxys-esphome/i18n/en.yaml@v0.0.0
-  logger: github://OWNER/ioxys-esphome/core/logger.yaml@v0.0.0
-  api: github://OWNER/ioxys-esphome/core/api.yaml@v0.0.0
-  ota: github://OWNER/ioxys-esphome/core/ota.yaml@v0.0.0
-  safe_mode: github://OWNER/ioxys-esphome/core/safe-mode.yaml@v0.0.0
-  time: github://OWNER/ioxys-esphome/core/time-homeassistant.yaml@v0.0.0
-  energy: github://OWNER/ioxys-esphome/hardware/power-monitoring/energy-counters.yaml@v0.0.0
-  cutoff: github://OWNER/ioxys-esphome/hardware/plugs/common/overload-cutoff.yaml@v0.0.0
-  diag_uptime: github://OWNER/ioxys-esphome/hardware/diagnostics/uptime.yaml@v0.0.0
-  diag_wifi: github://OWNER/ioxys-esphome/hardware/diagnostics/wifi.yaml@v0.0.0
+  hardware: github://OWNER/esphome-configs/hardware/plugs/meross-cse7766/v1.yaml@v0.0.0
+  i18n_base: github://OWNER/esphome-configs/i18n/en.yaml@v0.0.0
+  logger: github://OWNER/esphome-configs/core/logger.yaml@v0.0.0
+  api: github://OWNER/esphome-configs/core/api.yaml@v0.0.0
+  ota: github://OWNER/esphome-configs/core/ota.yaml@v0.0.0
+  safe_mode: github://OWNER/esphome-configs/core/safe-mode.yaml@v0.0.0
+  time: github://OWNER/esphome-configs/core/time-homeassistant.yaml@v0.0.0
+  energy: github://OWNER/esphome-configs/hardware/power-monitoring/energy-counters.yaml@v0.0.0
+  cutoff: github://OWNER/esphome-configs/hardware/plugs/common/overload-cutoff.yaml@v0.0.0
+  diag_uptime: github://OWNER/esphome-configs/hardware/diagnostics/uptime.yaml@v0.0.0
+  diag_wifi: github://OWNER/esphome-configs/hardware/diagnostics/wifi.yaml@v0.0.0

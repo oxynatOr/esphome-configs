@@ -62,7 +62,7 @@ Use `python scripts/gen-catalog.py` output (`docs/CATALOG.md`) to see what alrea
 - No real IPs (use 192.0.2.x, 198.51.100.x, 203.0.113.x), MACs, keys, names or passwords.
 
 ## Remote references
-- Between files inside this repo always `github://OWNER/ioxys-esphome/<path>@<tag>`, never `@main`.
+- Between files inside this repo always `github://OWNER/esphome-configs/<path>@<tag>`, never `@main`.
 - All refs in one release use the same tag; `scripts/bump-tag.py` changes them together.
 - Adoptable files must have `dashboard_import.package_import_url` pointing to themselves.
 - Remote packages cannot ship local files (images, C++ headers, partition tables). Such things stay in the private repo

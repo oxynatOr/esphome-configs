@@ -48,7 +48,7 @@ The add-ons only use ids defined in the core. Leave any of them out and the core
 
 ## Quick start
 
-Device config in your ESPHome folder (repository cloned to `ioxys-esphome/`, or use `github://` references):
+Device config in your ESPHome folder (repository cloned to `esphome-configs/`, or use `github://` references):
 
 ```yaml
 substitutions:
@@ -61,8 +61,8 @@ substitutions:
   plug_device_name: Freezer plug
 
 packages:
-  plug: !include ioxys-esphome/projects/plug-s/v3.yaml
-  failsafe: !include ioxys-esphome/hardware/plugs/addons/failsafe.yaml   # optional, not part of the project
+  plug: !include esphome-configs/projects/plug-s/v3.yaml
+  failsafe: !include esphome-configs/hardware/plugs/addons/failsafe.yaml   # optional, not part of the project
 ```
 
 Entity names come from `i18n/en.yaml` (`txt_*` keys); override single texts with your own `substitutions:`.

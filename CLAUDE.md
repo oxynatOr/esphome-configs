@@ -1,4 +1,4 @@
-# ioxys-esphome
+# esphome-configs
 
 Public ESPHome package repository (core / hardware / i18n / projects). Read `CONVENTIONS.md` before
 adding or changing any file; it is the single source of truth.

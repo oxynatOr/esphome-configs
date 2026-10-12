@@ -32,7 +32,7 @@ If something similar exists (`Glob hardware/**`, `docs/CATALOG.md`), extend or r
   Single-instance hardware does not use sub-devices.
 - Pins and chip specifics are substitutions or live in the revision file, never in generic blocks.
 - No real IPs, MACs, keys or personal entity ids; only `!secret wifi_ssid`, `wifi_password`, `wifi_ap_password`.
-- References between repository files: `github://OWNER/ioxys-esphome/<path>@v0.0.0`, never `@main`.
+- References between repository files: `github://OWNER/esphome-configs/<path>@v0.0.0`, never `@main`.
 
 ## 4. Prove it
 - Add a small config to `examples/` (or a project) that includes the module; multi-instance modules get two instances.

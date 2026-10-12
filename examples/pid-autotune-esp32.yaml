@@ -17,6 +17,6 @@ sensor:
     update_interval: 10s
 
 packages:
-  i18n: github://OWNER/ioxys-esphome/i18n/en.yaml@v0.0.0
-  pwm: github://OWNER/ioxys-esphome/hardware/controllers/fan-pwm-ledc.yaml@v0.0.0
-  autotune: github://OWNER/ioxys-esphome/hardware/controllers/pid-autotune.yaml@v0.0.0
+  i18n: github://OWNER/esphome-configs/i18n/en.yaml@v0.0.0
+  pwm: github://OWNER/esphome-configs/hardware/controllers/fan-pwm-ledc.yaml@v0.0.0
+  autotune: github://OWNER/esphome-configs/hardware/controllers/pid-autotune.yaml@v0.0.0

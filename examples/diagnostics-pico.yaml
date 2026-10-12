@@ -8,8 +8,8 @@ logger:
 
 
 packages:
-  board: github://OWNER/ioxys-esphome/hardware/boards/rp2040.yaml@v0.0.0
-  i18n: github://OWNER/ioxys-esphome/i18n/en.yaml@v0.0.0
-  uptime: github://OWNER/ioxys-esphome/hardware/diagnostics/uptime.yaml@v0.0.0
-  wifi: github://OWNER/ioxys-esphome/hardware/diagnostics/wifi.yaml@v0.0.0
-  pico: github://OWNER/ioxys-esphome/hardware/diagnostics/pico.yaml@v0.0.0
+  board: github://OWNER/esphome-configs/hardware/boards/rp2040.yaml@v0.0.0
+  i18n: github://OWNER/esphome-configs/i18n/en.yaml@v0.0.0
+  uptime: github://OWNER/esphome-configs/hardware/diagnostics/uptime.yaml@v0.0.0
+  wifi: github://OWNER/esphome-configs/hardware/diagnostics/wifi.yaml@v0.0.0
+  pico: github://OWNER/esphome-configs/hardware/diagnostics/pico.yaml@v0.0.0

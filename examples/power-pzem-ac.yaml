@@ -20,7 +20,7 @@ modbus:
   uart_id: uart_bus
 
 packages:
-  i18n: github://OWNER/ioxys-esphome/i18n/en.yaml@v0.0.0
-  pzem: github://OWNER/ioxys-esphome/hardware/power-monitoring/pzem-ac.yaml@v0.0.0
-  debug: github://OWNER/ioxys-esphome/hardware/diagnostics/debug.yaml@v0.0.0
-  colors: github://OWNER/ioxys-esphome/hardware/ui-elements/colors-basic.yaml@v0.0.0
+  i18n: github://OWNER/esphome-configs/i18n/en.yaml@v0.0.0
+  pzem: github://OWNER/esphome-configs/hardware/power-monitoring/pzem-ac.yaml@v0.0.0
+  debug: github://OWNER/esphome-configs/hardware/diagnostics/debug.yaml@v0.0.0
+  colors: github://OWNER/esphome-configs/hardware/ui-elements/colors-basic.yaml@v0.0.0
