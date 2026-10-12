@@ -1,0 +1,33 @@
+# Purpose:       One DS18B20 temperature sensor on the 1-Wire hub. Include once per sensor (with different vars).
+# Requires:      one-wire-hub.yaml, i18n/en.yaml
+# Chip:          any
+# Substitutions:
+#   ds18b20_one_wire_id:       one_wire_hub - id of the 1-Wire hub
+#   ds18b20_address:           0x0000000000000000 - 64 bit address of the sensor, ALWAYS override (see the device log)
+#   ds18b20_id:                ds18b20_temperature - id of the sensor, override when using several sensors
+#   ds18b20_name:              ${txt_ds18b20_temperature} - entity name, override when using several sensors
+#   ds18b20_resolution:        12 - 9 to 12 bit
+#   ds18b20_icon:              mdi:thermometer
+#   ds18b20_update_interval:   60s
+substitutions:
+  ds18b20_one_wire_id: one_wire_hub
+  ds18b20_address: "0x0000000000000000"
+  ds18b20_id: ds18b20_temperature
+  ds18b20_name: ${txt_ds18b20_temperature}
+  ds18b20_resolution: "12"
+  ds18b20_icon: mdi:thermometer
+  ds18b20_update_interval: 60s
+
+sensor:
+  - platform: dallas_temp
+    one_wire_id: ${ds18b20_one_wire_id}
+    address: ${ds18b20_address}
+    name: ${ds18b20_name}
+    id: ${ds18b20_id}
+    resolution: ${ds18b20_resolution}
+    icon: ${ds18b20_icon}
+    accuracy_decimals: 2
+    unit_of_measurement: "°C"
+    device_class: temperature
+    state_class: measurement
+    update_interval: ${ds18b20_update_interval}

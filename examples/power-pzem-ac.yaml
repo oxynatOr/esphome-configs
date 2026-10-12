@@ -1,0 +1,26 @@
+esphome:
+  name: example-pzem
+
+esp32:
+  board: esp32dev
+
+wifi:
+  ap:
+
+logger:
+
+uart:
+  id: uart_bus
+  tx_pin: GPIO17
+  rx_pin: GPIO16
+  baud_rate: 9600
+  stop_bits: 1
+
+modbus:
+  uart_id: uart_bus
+
+packages:
+  i18n: github://OWNER/ioxys-esphome/i18n/en.yaml@v0.0.0
+  pzem: github://OWNER/ioxys-esphome/hardware/power-monitoring/pzem-ac.yaml@v0.0.0
+  debug: github://OWNER/ioxys-esphome/hardware/diagnostics/debug.yaml@v0.0.0
+  colors: github://OWNER/ioxys-esphome/hardware/ui-elements/colors-basic.yaml@v0.0.0

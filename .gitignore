@@ -4,3 +4,7 @@ secrets.yaml
 .venv/
 __pycache__/
 .claude/settings.local.json
+
+# raw import of the previous configs - never commit
+__ESPHOME__/
+private/

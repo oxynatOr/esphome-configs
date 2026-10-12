@@ -1,0 +1,175 @@
+# Purpose:       BME680/BME688 (I2C) with BSEC2: IAQ, CO2/VOC equivalent, classifications, dew point, absolute pressure.
+# Requires:      i2c: component with id ${bme68x_i2c_id}, i18n/en.yaml
+# Chip:          esp32 (BSEC2 needs a lot of flash and RAM)
+# Substitutions: all documented with their defaults in the block below (bme68x_* prefix, names via txt_bme68x_*)
+# Note:          one instance per device. Use bme68x_model BME680 or BME688.
+substitutions:
+  bme68x_address: 0x77
+  bme68x_algorithm_output: classification
+  bme68x_altitude: 0
+  bme68x_bsec2_id: bme68x_bsec2_hub
+  bme68x_i2c_id: i2c_bus
+  bme68x_model: BME688
+  bme68x_op_age: 4d
+  bme68x_sample_rate: LP
+  bme68x_sample_rate_humidity: LP
+  bme68x_sample_rate_pressure: LP
+  bme68x_sample_rate_temperature: LP
+  bme68x_save_interval: 6hours
+  bme68x_temperature_offset: 0
+  bme68x_vcc_voltage: 3.3V
+
+bme68x_bsec2_i2c:
+  address: ${bme68x_address}
+  model: ${bme68x_model}
+  operating_age: ${bme68x_op_age}
+  sample_rate: ${bme68x_sample_rate}
+  supply_voltage: ${bme68x_vcc_voltage}
+  state_save_interval: ${bme68x_save_interval}
+  temperature_offset: ${bme68x_temperature_offset}
+  algorithm_output: ${bme68x_algorithm_output}
+  id: ${bme68x_bsec2_id}
+  i2c_id: ${bme68x_i2c_id}
+
+
+sensor:
+  - platform: bme68x_bsec2
+    bme68x_bsec2_id: ${bme68x_bsec2_id}
+    temperature:
+      sample_rate: ${bme68x_sample_rate_temperature}
+      name: ${txt_bme68x_temperature}
+      id: ${bme68x_bsec2_id}_temperature
+      unit_of_measurement: "°C"
+      icon: "mdi:thermometer"
+      device_class: "temperature"
+      state_class: "measurement"
+      accuracy_decimals: 2
+    humidity:
+      sample_rate: ${bme68x_sample_rate_humidity}
+      name: ${txt_bme68x_humidity}
+      id: ${bme68x_bsec2_id}_humidity
+      unit_of_measurement: "%"
+      icon: "mdi:water-percent"
+      device_class: "humidity"
+      state_class: "measurement"
+      accuracy_decimals: 2
+    pressure:
+      sample_rate: ${bme68x_sample_rate_pressure}
+      name: ${txt_bme68x_pressure}
+      id: ${bme68x_bsec2_id}_pressure
+      icon: "mdi:gauge"
+      device_class: "pressure"
+      state_class: "measurement"
+      accuracy_decimals: 2
+    co2_equivalent:
+      name: ${txt_bme68x_co2_equivalent}
+      id: ${bme68x_bsec2_id}_co2_equivalent
+      accuracy_decimals: 2
+      icon: "mdi:molecule-co2"
+    breath_voc_equivalent:
+      name: ${txt_bme68x_voc_equivalent}
+      icon: "mdi:molecule"
+      accuracy_decimals: 2
+      id: ${bme68x_bsec2_id}_voc_equivalent
+    iaq:
+      name: ${txt_bme68x_iaq}
+      id: ${bme68x_bsec2_id}_iaq
+      accuracy_decimals: 2
+      icon: "mdi:approximately-equal"
+    gas_resistance:
+      name: ${txt_bme68x_gas_resistance}
+      accuracy_decimals: 2
+      icon: "mdi:omega"
+      id: ${bme68x_bsec2_id}_gas_resistance
+    iaq_accuracy:
+      name: ${txt_bme68x_iaq_accuracy}
+      accuracy_decimals: 2
+      id: ${bme68x_bsec2_id}_iaq_accuracy
+    iaq_static:
+      name: ${txt_bme68x_iaq_static}
+      accuracy_decimals: 2
+      id: ${bme68x_bsec2_id}_iaq_static
+
+  - platform: absolute_humidity
+    name: ${txt_bme68x_absolute_humidity}
+    icon: "mdi:water"
+    accuracy_decimals: 2
+    temperature: ${bme68x_bsec2_id}_temperature
+    humidity: ${bme68x_bsec2_id}_humidity
+
+  - platform: dew_point
+    name: ${txt_bme68x_dew_point}
+    temperature: ${bme68x_bsec2_id}_temperature
+    humidity: ${bme68x_bsec2_id}_humidity
+    icon: 'mdi:thermometer-alert'
+    accuracy_decimals: 2
+
+  - platform: template
+    name: ${txt_bme68x_absolute_pressure}
+    lambda: |-
+        return id(${bme68x_bsec2_id}_pressure).state + (${bme68x_altitude}/8.0);
+    unit_of_measurement: "hPa"
+    icon: "mdi:gauge"
+    device_class: "pressure"
+    state_class: "measurement"
+    accuracy_decimals: 2
+    id: ${bme68x_bsec2_id}_absolute_press
+
+text_sensor:
+  - platform: bme68x_bsec2
+    bme68x_bsec2_id: ${bme68x_bsec2_id}
+    iaq_accuracy:
+      name: ${txt_bme68x_iaq_accuracy}
+
+
+  - platform: template
+    name: ${txt_bme68x_iaq_classification}
+    icon: "mdi:checkbox-marked-circle-outline"
+    lambda: |-
+      if ( int(id(${bme68x_bsec2_id}_iaq).state) <= 50) {
+        return {"Excellent"};
+      }
+      else if (int(id(${bme68x_bsec2_id}_iaq).state) >= 51 && int(id(${bme68x_bsec2_id}_iaq).state) <= 100) {
+        return {"Good"};
+      }
+      else if (int(id(${bme68x_bsec2_id}_iaq).state) >= 101 && int(id(${bme68x_bsec2_id}_iaq).state) <= 150) {
+        return {"Lightly polluted"};
+      }
+      else if (int(id(${bme68x_bsec2_id}_iaq).state) >= 151 && int(id(${bme68x_bsec2_id}_iaq).state) <= 200) {
+        return {"Moderately polluted"};
+      }
+      else if (int(id(${bme68x_bsec2_id}_iaq).state) >= 201 && int(id(${bme68x_bsec2_id}_iaq).state) <= 250) {
+        return {"Heavily polluted"};
+      }
+      else if (int(id(${bme68x_bsec2_id}_iaq).state) >= 251 && int(id(${bme68x_bsec2_id}_iaq).state) <= 350) {
+        return {"Severely polluted"};
+      }
+      else if (int(id(${bme68x_bsec2_id}_iaq).state) >= 351) {
+        return {"Extremely polluted"};
+      }
+      else {
+        return {"error"};
+      }
+
+  - platform: template
+    name: ${txt_bme68x_co2_classification}
+    icon: "mdi:checkbox-marked-circle-outline"
+    lambda: |-
+      if ( int(id(${bme68x_bsec2_id}_co2_equivalent).state) <= 400) {
+        return {"Excellent"};
+      }
+      else if (int(id(${bme68x_bsec2_id}_co2_equivalent).state) >= 401 && int(id(${bme68x_bsec2_id}_co2_equivalent).state) <= 1000) {
+        return {"Normal"};
+      }
+      else if (int(id(${bme68x_bsec2_id}_co2_equivalent).state) >= 1001 && int(id(${bme68x_bsec2_id}_co2_equivalent).state) <= 2000) {
+        return {"Unhealthy"};
+      }
+      else if (int(id(${bme68x_bsec2_id}_co2_equivalent).state) >= 2001 && int(id(${bme68x_bsec2_id}_co2_equivalent).state) <= 5000) {
+        return {"Health Risk"};
+      }
+      else if (int(id(${bme68x_bsec2_id}_co2_equivalent).state) >= 5001) {
+        return {"DANGER!"};
+      }
+      else {
+        return {"error"};
+      }

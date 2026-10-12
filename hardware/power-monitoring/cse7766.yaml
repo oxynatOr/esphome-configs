@@ -1,0 +1,39 @@
+# Purpose:       CSE7766 energy meter over UART (Sonoff POW R2 and similar): voltage, current, power, energy (ids bvoltage, bcurrent, bpower).
+# Requires:      i18n/en.yaml
+# Chip:          esp8266 or esp32
+# Substitutions:
+#   cse7766_rx_pin:          GPIO3 - UART RX pin (ESP8266: GPIO3)
+# Note:          the readings are uncalibrated. Add calibrate_linear filters per unit with !extend if they are off.
+substitutions:
+  cse7766_rx_pin: GPIO3
+
+uart:
+  rx_pin: ${cse7766_rx_pin}
+  baud_rate: 4800
+  parity: EVEN
+
+sensor:
+  - platform: cse7766
+    current:
+      name: ${txt_cse7766_current}
+      id: bcurrent
+      unit_of_measurement: A
+      accuracy_decimals: 3
+      icon: mdi:flash-outline
+    voltage:
+      name: ${txt_cse7766_voltage}
+      id: bvoltage
+      unit_of_measurement: V
+      icon: mdi:flash-outline
+    power:
+      name: ${txt_cse7766_power}
+      id: bpower
+      unit_of_measurement: W
+      icon: mdi:flash-outline
+    energy:
+      name: ${txt_cse7766_energy}
+      unit_of_measurement: kWh
+      icon: mdi:chart-bell-curve-cumulative
+      filters:
+        # the chip reports Wh
+        - multiply: 0.001

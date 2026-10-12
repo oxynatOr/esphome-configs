@@ -5,4 +5,11 @@
 substitutions:
   txt_restart: Neustart
   txt_uptime: Betriebszeit
-  txt_wifi_signal: WLAN-Signal
+  txt_uptime_sensor: Betriebszeit (Sensor)
+  txt_wifi_ip_address: IP-Adresse
+  txt_wifi_signal_db: WLAN-Signal dB
+  txt_wifi_signal_percent: WLAN-Signal Prozent
+  txt_esp_free_memory_percent: ESP freier Speicher in Prozent
+  txt_esp_free_memory: ESP freier Speicher
+  txt_esp_temperature: ESP-Temperatur
+  txt_core_temperature: Kerntemperatur

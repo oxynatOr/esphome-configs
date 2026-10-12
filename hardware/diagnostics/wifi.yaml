@@ -1,0 +1,41 @@
+# Purpose:       WiFi diagnostics: IP address, SSID, BSSID, signal strength in dB and in percent.
+# Requires:      i18n/en.yaml
+# Chip:          any
+# Substitutions:
+#   diag_wifi_update_interval: 60s - update interval of the signal sensors
+substitutions:
+  diag_wifi_update_interval: 60s
+
+text_sensor:
+  - platform: wifi_info
+    ip_address:
+      name: ${txt_wifi_ip_address}
+      icon: mdi:ip-outline
+      entity_category: diagnostic
+    ssid:
+      name: ${txt_wifi_ssid}
+      icon: mdi:alpha-s-circle-outline
+      entity_category: diagnostic
+    bssid:
+      name: ${txt_wifi_bssid}
+      icon: mdi:identifier
+      entity_category: diagnostic
+
+sensor:
+  - platform: wifi_signal
+    name: ${txt_wifi_signal_db}
+    id: wifi_signal_db
+    icon: mdi:signal-variant
+    update_interval: ${diag_wifi_update_interval}
+    entity_category: diagnostic
+    accuracy_decimals: 2
+
+  - platform: copy
+    source_id: wifi_signal_db
+    name: ${txt_wifi_signal_percent}
+    icon: mdi:percent-circle-outline
+    filters:
+      - lambda: return min(max(2 * (x + 100.0), 0.0), 100.0);
+    unit_of_measurement: "%"
+    entity_category: diagnostic
+    accuracy_decimals: 2

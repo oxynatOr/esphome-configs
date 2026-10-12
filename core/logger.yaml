@@ -1,0 +1,10 @@
+# Purpose:       Logger with a configurable level.
+# Requires:      none
+# Chip:          any
+# Substitutions:
+#   logger_level: INFO - NONE, ERROR, WARN, INFO, DEBUG, VERBOSE
+substitutions:
+  logger_level: INFO
+
+logger:
+  level: ${logger_level}

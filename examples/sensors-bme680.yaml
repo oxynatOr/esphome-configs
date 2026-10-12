@@ -1,0 +1,36 @@
+# Two BME680 on separate I2C buses; each becomes its own sub-device. Local includes keep the example runnable
+# before the repository is tagged.
+esphome:
+  name: example-bme680
+
+esp32:
+  board: esp32dev
+
+wifi:
+  ap:
+
+logger:
+
+i2c:
+  - id: bus_a
+    sda: GPIO21
+    scl: GPIO22
+  - id: bus_b
+    sda: GPIO16
+    scl: GPIO17
+
+packages:
+  i18n: !include ../i18n/en.yaml
+  room_1: !include
+    file: ../hardware/sensors/bme680.yaml
+    vars:
+      bme680_id: "1"
+      bme680_name: Server room
+      bme680_i2c_id: bus_a
+  room_2: !include
+    file: ../hardware/sensors/bme680.yaml
+    vars:
+      bme680_id: "2"
+      bme680_name: Workshop
+      bme680_i2c_id: bus_b
+      bme680_address: "0x76"

@@ -1,0 +1,43 @@
+# Purpose:       BME280 (I2C): temperature, pressure, humidity plus absolute humidity and dew point.
+# Requires:      i2c: component, i18n/en.yaml
+# Chip:          any
+# Substitutions:
+#   bme280_address: 0x76
+#   bme280_update_interval: 60s
+#   bme280_temperature_oversampling / pressure / humidity: 16x
+#   bme280_iir_filter: OFF - OFF, 2X, 4X, 8X, 16X
+substitutions:
+  bme280_address: 0x76
+  bme280_update_interval: 60s
+  bme280_temperature_oversampling: 16x
+  bme280_pressure_oversampling: 16x
+  bme280_humidity_oversampling: 16x
+  bme280_iir_filter: "OFF"
+
+sensor:
+  - platform: bme280_i2c
+    address: ${bme280_address}
+    update_interval: ${bme280_update_interval}
+    iir_filter: ${bme280_iir_filter}
+    temperature:
+      name: ${txt_bme280_temperature}
+      id: bme280_temperature
+      oversampling: ${bme280_temperature_oversampling}
+    pressure:
+      name: ${txt_bme280_pressure}
+      id: bme280_pressure
+      oversampling: ${bme280_pressure_oversampling}
+    humidity:
+      name: ${txt_bme280_humidity}
+      id: bme280_humidity
+      oversampling: ${bme280_humidity_oversampling}
+
+  - platform: absolute_humidity
+    name: ${txt_bme280_absolute_humidity}
+    temperature: bme280_temperature
+    humidity: bme280_humidity
+
+  - platform: dew_point
+    name: ${txt_bme280_dew_point}
+    temperature: bme280_temperature
+    humidity: bme280_humidity

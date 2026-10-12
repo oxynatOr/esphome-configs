@@ -1,0 +1,28 @@
+# Purpose:       BMP280 (I2C): temperature and pressure.
+# Requires:      i2c: component, i18n/en.yaml
+# Chip:          any
+# Substitutions:
+#   bmp280_address: 0x76
+#   bmp280_update_interval: 60s
+#   bmp280_iir_filter: OFF - OFF, 2X, 4X, 8X, 16X
+#   bmp280_temperature_oversampling / bmp280_pressure_oversampling: 16x
+substitutions:
+  bmp280_address: "0x76"
+  bmp280_update_interval: 60s
+  bmp280_iir_filter: "OFF"
+  bmp280_temperature_oversampling: 16x
+  bmp280_pressure_oversampling: 16x
+
+sensor:
+  - platform: bmp280_i2c
+    address: ${bmp280_address}
+    update_interval: ${bmp280_update_interval}
+    iir_filter: ${bmp280_iir_filter}
+    temperature:
+      name: ${txt_bmp280_temperature}
+      id: bmp280_temperature
+      oversampling: ${bmp280_temperature_oversampling}
+    pressure:
+      name: ${txt_bmp280_pressure}
+      id: bmp280_pressure
+      oversampling: ${bmp280_pressure_oversampling}

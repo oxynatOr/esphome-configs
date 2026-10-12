@@ -1,0 +1,70 @@
+# Purpose:       Temporary PID autotune: use INSTEAD of pid-fan.yaml, press the button, read kp/ki/kd from the log.
+# Requires:      output id fan${pid_fan_id}_speed, a temperature sensor with id ${pid_fan_source_sensor}, i18n/en.yaml
+# Chip:          any
+# Substitutions:
+#   pid_fan_id: 1 / pid_fan_name: Fan - same sub-device as pid-fan.yaml
+#   pid_fan_autotune_target_temperature: 30.0 - set it high enough above the idle temperature
+#   pid_fan_autotune_noiseband: 0.25, positive/negative output: 100% / -100%
+# Steps: 1) swap pid-fan.yaml for this file, 2) flash, 3) press 'Start autotune',
+# 4) wait for 'State: Succeeded' in the log, 5) copy kp/ki/kd, swap the files back, flash.
+substitutions:
+  pid_fan_id: "1"
+  pid_fan_name: Fan
+  pid_fan_source_sensor: pid_fan_temperature_source
+  pid_fan_autotune_target_temperature: "30.0"
+  pid_fan_autotune_noiseband: "0.25"
+  pid_fan_autotune_positive_output: "100%"
+  pid_fan_autotune_negative_output: "-100%"
+
+esphome:
+  devices:
+    - id: pid_fan_${pid_fan_id}
+      name: "${pid_fan_name} ${pid_fan_id}"
+
+climate:
+  - platform: pid
+    name: ${txt_pid_fan_autotune_climate}
+    id: fan${pid_fan_id}_thermostat
+    sensor: ${pid_fan_source_sensor}
+    default_target_temperature: ${pid_fan_autotune_target_temperature}
+    cool_output: fan${pid_fan_id}_speed
+    device_id: pid_fan_${pid_fan_id}
+    visual:
+      min_temperature: 0
+      max_temperature: 60
+      temperature_step:
+        target_temperature: 0.5
+        current_temperature: 0.1
+    # all parameters must be 0 for the autotune
+    control_parameters:
+      kp: 0.0
+      ki: 0.0
+      kd: 0.0
+
+button:
+  - platform: template
+    name: ${txt_pid_fan_autotune_start}
+    icon: mdi:tune-vertical
+    entity_category: config
+    device_id: pid_fan_${pid_fan_id}
+    on_press:
+      - climate.pid.autotune:
+          id: fan${pid_fan_id}_thermostat
+          noiseband: ${pid_fan_autotune_noiseband}
+          positive_output: ${pid_fan_autotune_positive_output}
+          negative_output: ${pid_fan_autotune_negative_output}
+
+text_sensor:
+  - platform: template
+    name: ${txt_pid_fan_autotune_status}
+    id: fan${pid_fan_id}_autotune_status
+    icon: mdi:state-machine
+    entity_category: diagnostic
+    device_id: pid_fan_${pid_fan_id}
+    update_interval: 5s
+    lambda: |-
+      auto *pid = id(fan${pid_fan_id}_thermostat);
+      if (!pid->is_autotune_running()) {
+        return {"Idle"};
+      }
+      return {"Running - see the log"};

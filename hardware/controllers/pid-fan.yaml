@@ -1,0 +1,417 @@
+# Purpose:       PID fan/heater controller as its own sub-device: climate, PID term sensors, tuning numbers, status, tachometer.
+# Requires:      output id fan${pid_fan_id}_speed (fan-pwm-ledc.yaml or fan-pwm-rp2040.yaml), a temperature sensor with id ${pid_fan_source_sensor}, i18n/en.yaml
+# Chip:          any
+# Substitutions:
+#   pid_fan_id: 1 / pid_fan_name: Fan - sub-device 'Fan 1', ids fan1_*; include with vars once per fan
+#   pid_fan_type: COOL / pid_fan_output_key: cool_output - use HEAT / heat_output for a heater
+#   pid_fan_source_sensor: pid_fan_temperature_source - id of the controlled temperature sensor
+#   pid_fan_target_temperature: 35.0 - C; visual min/max 0/60, steps 0.5/0.1
+#   pid_fan_kp/ki/kd: 0.4946 / 0.00487 / 12.563 - tuned for one setup, run the autotune for yours
+#   pid_fan_max_integral / min_integral: 0.0 / -1.0; samples: output 5, derivative 5
+#   pid_fan_threshold_high / low: 0.5 / -0.5 and *_x multipliers 0.0 / 0.13 / 0.0 - deadband
+#   pid_fan_tacho_pin: GPIO19, pid_fan_rpm_update_interval: 5s
+# Creates the sub-device itself, so every fan is one device in Home Assistant.
+substitutions:
+  pid_fan_id: "1"
+  pid_fan_name: Fan
+  pid_fan_type: COOL
+  pid_fan_output_key: cool_output
+  pid_fan_source_sensor: pid_fan_temperature_source
+  pid_fan_target_temperature: "35.0"
+  pid_fan_visual_min_temp: "0.0"
+  pid_fan_visual_max_temp: "60.0"
+  pid_fan_step_target: "0.5"
+  pid_fan_step_current: "0.1"
+  pid_fan_kp: "0.49460"
+  pid_fan_ki: "0.00487"
+  pid_fan_kd: "12.56301"
+  pid_fan_max_integral: "0.0"
+  pid_fan_min_integral: "-1.0"
+  pid_fan_output_samples: "5"
+  pid_fan_derivative_samples: "5"
+  pid_fan_threshold_high: "0.5"
+  pid_fan_threshold_low: "-0.5"
+  pid_fan_kp_x: "0.0"
+  pid_fan_ki_x: "0.13"
+  pid_fan_kd_x: "0.0"
+  pid_fan_deadband_output_samples: "15"
+  pid_fan_tacho_pin: GPIO19
+  pid_fan_rpm_update_interval: 5s
+
+esphome:
+  devices:
+    - id: pid_fan_${pid_fan_id}
+      name: "${pid_fan_name} ${pid_fan_id}"
+
+climate:
+  - platform: pid
+    name: ${txt_pid_fan_climate_pid}
+    id: fan${pid_fan_id}_thermostat
+    sensor: ${pid_fan_source_sensor}
+    default_target_temperature: ${pid_fan_target_temperature}
+    ${pid_fan_output_key}: fan${pid_fan_id}_speed
+    device_id: pid_fan_${pid_fan_id}
+
+    visual:
+      min_temperature: ${pid_fan_visual_min_temp}
+      max_temperature: ${pid_fan_visual_max_temp}
+      temperature_step:
+        target_temperature: ${pid_fan_step_target}
+        current_temperature: ${pid_fan_step_current}
+
+    control_parameters:
+      kp: ${pid_fan_kp}
+      ki: ${pid_fan_ki}
+      kd: ${pid_fan_kd}
+      max_integral: ${pid_fan_max_integral}
+      min_integral: ${pid_fan_min_integral}
+      output_averaging_samples: ${pid_fan_output_samples}
+      derivative_averaging_samples: ${pid_fan_derivative_samples}
+
+    deadband_parameters:
+      threshold_high: ${pid_fan_threshold_high}
+      threshold_low: ${pid_fan_threshold_low}
+      kp_multiplier: ${pid_fan_kp_x}
+      ki_multiplier: ${pid_fan_ki_x}
+      kd_multiplier: ${pid_fan_kd_x}
+      deadband_output_averaging_samples: ${pid_fan_deadband_output_samples}
+
+    on_control:
+      - lambda: |-
+          ESP_LOGI("FAN-${pid_fan_id}",
+                   "Control input received. Target: %.1f",
+                   id(fan${pid_fan_id}_thermostat).target_temperature);
+    on_state:
+      - lambda: |-
+          const float cur = x.current_temperature;
+          const float tgt = x.target_temperature;
+
+          ESP_LOGI("FAN-${pid_fan_id}",
+                   "Current %.1f - Target %.1f", cur, tgt);
+
+          const char* status = "Unknown";
+          switch (x.action) {
+            case CLIMATE_ACTION_OFF:     status = "Off";     break;
+            case CLIMATE_ACTION_COOLING: status = "Cooling"; break;
+            case CLIMATE_ACTION_HEATING: status = "Heating"; break;
+            case CLIMATE_ACTION_IDLE:    status = "Idle";    break;
+            case CLIMATE_ACTION_DRYING:  status = "Drying";  break;
+            case CLIMATE_ACTION_FAN:     status = "Fan";     break;
+            default: break;
+          }
+          id(fan${pid_fan_id}_pid_status).publish_state(status);
+          id(fan${pid_fan_id}_pid_action).publish_state((float) x.action);
+text_sensor:
+  - platform: template
+    name: ${txt_pid_fan_pid_controller_status}
+    device_id: pid_fan_${pid_fan_id}
+    id: fan${pid_fan_id}_pid_status
+    icon: mdi:information-variant-circle-outline
+    entity_category: "diagnostic"
+sensor:
+  - platform: pid
+    name: ${txt_pid_fan_duty_cycle}
+    id: fan${pid_fan_id}_dutycycle
+    climate_id: fan${pid_fan_id}_thermostat
+    type: ${pid_fan_type}
+    accuracy_decimals: 2
+    device_id: pid_fan_${pid_fan_id}
+    entity_category: "diagnostic"
+
+  - platform: pid
+    name: ${txt_pid_fan_resulting_value}
+    id: fan${pid_fan_id}_resulting_value
+    climate_id: fan${pid_fan_id}_thermostat
+    type: RESULT
+    device_id: pid_fan_${pid_fan_id}
+    accuracy_decimals: 2
+    entity_category: "diagnostic"
+
+  - platform: pid
+    name: ${txt_pid_fan_calculated_error}
+    id: fan${pid_fan_id}_calculated_error
+    climate_id: fan${pid_fan_id}_thermostat
+    type: ERROR
+    device_id: pid_fan_${pid_fan_id}
+    accuracy_decimals: 2
+    entity_category: "diagnostic"
+
+  - platform: pid
+    name: ${txt_pid_fan_proportional_term}
+    id: fan${pid_fan_id}_proportional_term
+    climate_id: fan${pid_fan_id}_thermostat
+    type: PROPORTIONAL
+    device_id: pid_fan_${pid_fan_id}
+    accuracy_decimals: 2
+    entity_category: "diagnostic"
+
+  - platform: pid
+    name: ${txt_pid_fan_integral_term}
+    id: fan${pid_fan_id}_integral_term
+    climate_id: fan${pid_fan_id}_thermostat
+    type: INTEGRAL
+    device_id: pid_fan_${pid_fan_id}
+    accuracy_decimals: 2
+    entity_category: "diagnostic"
+
+  - platform: pid
+    name: ${txt_pid_fan_derivative_term}
+    id: fan${pid_fan_id}_derivative_term
+    climate_id: fan${pid_fan_id}_thermostat
+    type: DERIVATIVE
+    device_id: pid_fan_${pid_fan_id}
+    accuracy_decimals: 2
+    entity_category: "diagnostic"
+
+  - platform: pid
+    name: ${txt_pid_fan_proportional_factor}
+    id: fan${pid_fan_id}_KP
+    climate_id: fan${pid_fan_id}_thermostat
+    type: KP
+    device_id: pid_fan_${pid_fan_id}
+    accuracy_decimals: 2
+    entity_category: "diagnostic"
+
+  - platform: pid
+    name: ${txt_pid_fan_integral_factor}
+    id: fan${pid_fan_id}_KI
+    climate_id: fan${pid_fan_id}_thermostat
+    type: KI
+    device_id: pid_fan_${pid_fan_id}
+    accuracy_decimals: 2
+    entity_category: "diagnostic"
+
+  - platform: pid
+    name: ${txt_pid_fan_differential_factor}
+    id: fan${pid_fan_id}_KD
+    climate_id: fan${pid_fan_id}_thermostat
+    type: KD
+    device_id: pid_fan_${pid_fan_id}
+    accuracy_decimals: 2
+    entity_category: "diagnostic"
+
+  - platform: template
+    name: ${txt_pid_fan_is_in_deadband}
+    id: fan${pid_fan_id}_in_deadband_term
+    entity_category: "diagnostic"
+    device_id: pid_fan_${pid_fan_id}
+    accuracy_decimals: 0
+    lambda: |-
+      return id(fan${pid_fan_id}_thermostat).in_deadband() ? 1.0f : 0.0f;
+  - platform: template
+    name: ${txt_pid_fan_pid_controller_action}
+    id: fan${pid_fan_id}_pid_action
+    device_id: pid_fan_${pid_fan_id}
+    internal: true
+    accuracy_decimals: 0
+  - platform: pulse_counter
+    device_id: pid_fan_${pid_fan_id}
+    pin:
+      number: ${pid_fan_tacho_pin}
+    name: ${txt_pid_fan_fan_speed}
+    id: fan${pid_fan_id}_pulse
+    unit_of_measurement: 'RPM'
+    filters:
+      - multiply: 0.5          # 2 pulses per revolution
+    count_mode:
+      rising_edge: INCREMENT
+      falling_edge: DISABLE
+    update_interval: ${pid_fan_rpm_update_interval}
+number:
+  - platform: template
+    device_id: pid_fan_${pid_fan_id}
+    name: ${txt_pid_fan_proportional_gain_kp}
+    icon: mdi:chart-bell-curve
+    entity_category: "config"
+    optimistic: true
+    restore_value: true
+    initial_value: ${pid_fan_kp}
+    min_value: 0
+    max_value: 50
+    step: 0.001
+    id: fan${pid_fan_id}_kp
+    set_action:
+      - lambda: |-
+          id(fan${pid_fan_id}_thermostat).set_kp(x);
+
+  - platform: template
+    name: ${txt_pid_fan_integral_gain_ki}
+    device_id: pid_fan_${pid_fan_id}
+    icon: mdi:chart-bell-curve
+    entity_category: "config"
+    id: fan${pid_fan_id}_ki
+    restore_value: true
+    initial_value: ${pid_fan_ki}
+    optimistic: true
+    min_value: 0
+    max_value: 50
+    step: 0.0001
+    set_action:
+      - lambda: |-
+          id(fan${pid_fan_id}_thermostat).set_ki(x);
+
+  - platform: template
+    name: ${txt_pid_fan_derivative_gain_kd}
+    device_id: pid_fan_${pid_fan_id}
+    icon: mdi:chart-bell-curve
+    entity_category: "config"
+    id: fan${pid_fan_id}_kd
+    optimistic: true
+    restore_value: true
+    initial_value: ${pid_fan_kd}
+    min_value: -50
+    max_value: 50
+    step: 0.001
+    set_action:
+      - lambda: |-
+          id(fan${pid_fan_id}_thermostat).set_kd(x);
+
+  - platform: template
+    id: fan${pid_fan_id}_kp_multiplier
+    name: ${txt_pid_fan_deadband_kp_multiplier}
+    device_id: pid_fan_${pid_fan_id}
+    optimistic: true
+    icon: mdi:chart-bell-curve
+    entity_category: "config"
+    restore_value: true
+    initial_value: ${pid_fan_kp_x}
+    min_value: 0
+    max_value: 0.2
+    step: 0.01
+    set_action:
+      - lambda: |-
+          id(fan${pid_fan_id}_thermostat).set_kp_multiplier(x);
+
+  - platform: template
+    id: fan${pid_fan_id}_ki_multiplier
+    name: ${txt_pid_fan_deadband_ki_multiplier}
+    device_id: pid_fan_${pid_fan_id}
+    icon: mdi:chart-bell-curve
+    entity_category: "config"
+    restore_value: true
+    initial_value: ${pid_fan_ki_x}
+    optimistic: true
+    min_value: 0
+    max_value: 0.2
+    step: 0.01
+    set_action:
+      - lambda: |-
+          id(fan${pid_fan_id}_thermostat).set_ki_multiplier(x);
+
+  - platform: template
+    id: fan${pid_fan_id}_kd_multiplier
+    name: ${txt_pid_fan_deadband_kd_multiplier}
+    device_id: pid_fan_${pid_fan_id}
+    icon: mdi:chart-bell-curve
+    entity_category: "config"
+    optimistic: true
+    restore_value: true
+    initial_value: ${pid_fan_kd_x}
+    min_value: 0
+    max_value: 0.2
+    step: 0.01
+    set_action:
+      - lambda: |-
+          id(fan${pid_fan_id}_thermostat).set_kd_multiplier(x);
+  - platform: template
+    id: fan${pid_fan_id}_threshold_low
+    name: ${txt_pid_fan_deadband_threshold_low}
+    device_id: pid_fan_${pid_fan_id}
+    icon: mdi:chart-bell-curve
+    entity_category: "config"
+    optimistic: true
+    restore_value: true
+    initial_value: ${pid_fan_threshold_low}
+    min_value: -20
+    max_value: 0
+    step: 0.1
+    set_action:
+      - lambda: |-
+          id(fan${pid_fan_id}_thermostat).set_threshold_low(x);
+  - platform: template
+    id: fan${pid_fan_id}_threshold_high
+    name: ${txt_pid_fan_deadband_threshold_high}
+    device_id: pid_fan_${pid_fan_id}
+    icon: mdi:chart-bell-curve
+    entity_category: "config"
+    restore_value: true
+    optimistic: true
+    initial_value: ${pid_fan_threshold_high}
+    min_value: 0
+    max_value: 20
+    step: 0.1
+    set_action:
+      - lambda: |-
+          id(fan${pid_fan_id}_thermostat).set_threshold_high(x);
+
+  - platform: template
+    id: fan${pid_fan_id}_min_integral
+    name: ${txt_pid_fan_minimal_integral}
+    device_id: pid_fan_${pid_fan_id}
+    entity_category: "config"
+    restore_value: true
+    optimistic: true
+    initial_value: ${pid_fan_min_integral}
+    min_value: -20
+    max_value: 20
+    step: 0.1
+    set_action:
+      - lambda: |-
+          id(fan${pid_fan_id}_thermostat).set_min_integral(x);
+
+  - platform: template
+    id: fan${pid_fan_id}_max_integral
+    name: ${txt_pid_fan_maximal_integral}
+    device_id: pid_fan_${pid_fan_id}
+    entity_category: "config"
+    restore_value: true
+    optimistic: true
+    initial_value: ${pid_fan_max_integral}
+    min_value: -20
+    max_value: 20
+    step: 0.1
+    set_action:
+      - lambda: |-
+          id(fan${pid_fan_id}_thermostat).set_max_integral(x);
+  - platform: template
+    id: fan${pid_fan_id}_output_samples
+    name: ${txt_pid_fan_output_samples}
+    device_id: pid_fan_${pid_fan_id}
+    entity_category: "config"
+    restore_value: true
+    optimistic: true
+    initial_value: ${pid_fan_output_samples}
+    min_value: 1
+    max_value: 100
+    step: 1
+    set_action:
+      - lambda: |-
+          id(fan${pid_fan_id}_thermostat).set_output_samples((int) x);
+  - platform: template
+    id: fan${pid_fan_id}_derivative_samples
+    name: ${txt_pid_fan_derivative_samples}
+    device_id: pid_fan_${pid_fan_id}
+    entity_category: "config"
+    restore_value: true
+    optimistic: true
+    initial_value: ${pid_fan_derivative_samples}
+    min_value: 1
+    max_value: 100
+    step: 1
+    set_action:
+      - lambda: |-
+          id(fan${pid_fan_id}_thermostat).set_derivative_samples((int) x);
+  - platform: template
+    id: fan${pid_fan_id}_Deadband_Output_samples
+    name: ${txt_pid_fan_deadband_output_samples}
+    device_id: pid_fan_${pid_fan_id}
+    entity_category: "config"
+    restore_value: true
+    optimistic: true
+    initial_value: ${pid_fan_deadband_output_samples}
+    min_value: 1
+    max_value: 100
+    step: 1
+    set_action:
+      - lambda: |-
+          id(fan${pid_fan_id}_thermostat).set_deadband_output_samples((int) x);

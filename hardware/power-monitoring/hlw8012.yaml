@@ -1,0 +1,46 @@
+# Purpose:       HLW8012 / BL0937 energy meter: voltage, current, power (ids bvoltage, bcurrent, bpower).
+# Requires:      i18n/en.yaml
+# Chip:          any
+# Substitutions:
+#   hlw8012_sel_pin / hlw8012_cf_pin / hlw8012_cf1_pin: GPIO12 / GPIO4 / GPIO5
+#   hlw8012_change_mode_every: 4
+#   hlw8012_current_resistor: 0.001 - shunt in ohm (ESPHome example value, calibrate!)
+#   hlw8012_voltage_divider: 2351 - (ESPHome example value, calibrate!)
+#   hlw8012_update_interval: 10s
+substitutions:
+  hlw8012_sel_pin: GPIO12
+  hlw8012_cf_pin: GPIO4
+  hlw8012_cf1_pin: GPIO5
+  hlw8012_change_mode_every: "4"
+  hlw8012_current_resistor: "0.001"
+  hlw8012_voltage_divider: "2351"
+  hlw8012_update_interval: 10s
+
+sensor:
+  - platform: hlw8012
+    sel_pin:
+      number: ${hlw8012_sel_pin}
+      inverted: true
+    cf_pin: ${hlw8012_cf_pin}
+    cf1_pin: ${hlw8012_cf1_pin}
+    change_mode_every: ${hlw8012_change_mode_every}
+    current_resistor: ${hlw8012_current_resistor}
+    voltage_divider: ${hlw8012_voltage_divider}
+    update_interval: ${hlw8012_update_interval}
+    current:
+      name: ${txt_hlw8012_current}
+      id: bcurrent
+      unit_of_measurement: A
+      accuracy_decimals: 3
+      icon: mdi:current-ac
+    voltage:
+      name: ${txt_hlw8012_voltage}
+      id: bvoltage
+      unit_of_measurement: V
+      accuracy_decimals: 1
+      icon: mdi:flash-outline
+    power:
+      name: ${txt_hlw8012_power}
+      id: bpower
+      unit_of_measurement: W
+      icon: mdi:gauge

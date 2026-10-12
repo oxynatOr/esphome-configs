@@ -1,0 +1,39 @@
+# Purpose:       25 kHz PWM fan output on the RP2040 with start/stop hysteresis (id fan${pid_fan_id}_speed).
+# Requires:      none
+# Chip:          rp2040
+# Substitutions:
+#   pid_fan_id: 1
+#   pid_fan_pwm_pin: GPIO18 / pid_fan_pwm_inverted: false (true for an open-drain transistor stage)
+#   pid_fan_pwm_frequency: 25000 Hz / pid_fan_min_power: 0.18 / pid_fan_max_power: 1.0
+substitutions:
+  pid_fan_id: "1"
+  pid_fan_pwm_pin: GPIO14
+  pid_fan_pwm_inverted: "false"
+  pid_fan_pwm_frequency: "25000"
+  pid_fan_min_power: "0.18"
+  pid_fan_max_power: "1.0"
+
+output:
+  - platform: rp2040_pwm
+    id: fan${pid_fan_id}_pwm_raw
+    pin:
+      number: ${pid_fan_pwm_pin}
+      inverted: ${pid_fan_pwm_inverted}
+    frequency: ${pid_fan_pwm_frequency}
+    min_power: ${pid_fan_min_power}
+    max_power: ${pid_fan_max_power}
+
+  # hysteresis: on above 6 %, off below 2 % - avoids a fan that stutters around the minimum speed
+  - platform: template
+    id: fan${pid_fan_id}_speed
+    type: float
+    write_action:
+      - lambda: |-
+          static bool running = false;
+          const float on_thr = 0.06f;
+          const float off_thr = 0.02f;
+
+          if (running && state < off_thr) running = false;
+          else if (!running && state > on_thr) running = true;
+
+          id(fan${pid_fan_id}_pwm_raw).set_level(running ? state : 0.0f);

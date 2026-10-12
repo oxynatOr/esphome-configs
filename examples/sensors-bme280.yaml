@@ -1,0 +1,17 @@
+esphome:
+  name: example-bme280
+
+wifi:
+  ap:
+
+logger:
+
+i2c:
+  id: i2c_bus
+  sda: GPIO21
+  scl: GPIO22
+
+packages:
+  board: github://OWNER/ioxys-esphome/hardware/boards/esp32.yaml@v0.0.0
+  i18n: github://OWNER/ioxys-esphome/i18n/en.yaml@v0.0.0
+  bme280: github://OWNER/ioxys-esphome/hardware/sensors/bme280.yaml@v0.0.0

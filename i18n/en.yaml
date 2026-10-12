@@ -5,4 +5,176 @@
 substitutions:
   txt_restart: Restart
   txt_uptime: Uptime
-  txt_wifi_signal: WiFi Signal
+  txt_bme680_absolute_humidity: Absolute Humidity
+  txt_bme680_dew_point: Dew Point
+  txt_bme680_gas_resistance: Gas Resistance
+  txt_bme680_humidity: Humidity
+  txt_bme680_pressure: Pressure
+  txt_bme680_temperature: Temperature
+  txt_bme68x_absolute_humidity: Absolute Humidity
+  txt_bme68x_absolute_pressure: Absolute Pressure
+  txt_bme68x_co2_classification: CO2 Classification
+  txt_bme68x_co2_equivalent: CO2 Equivalent
+  txt_bme68x_dew_point: Dew Point
+  txt_bme68x_gas_resistance: Gas Resistance
+  txt_bme68x_humidity: Humidity
+  txt_bme68x_iaq: IAQ
+  txt_bme68x_iaq_accuracy: IAQ Accuracy
+  txt_bme68x_iaq_classification: IAQ Classification
+  txt_bme68x_iaq_static: IAQ Static
+  txt_bme68x_pressure: Pressure
+  txt_bme68x_temperature: Temperature
+  txt_bme68x_voc_equivalent: VOC Equivalent
+  txt_uptime_sensor: Uptime Sensor
+  txt_esphome_version: ESPHome Version
+  txt_wifi_ip_address: IP Address
+  txt_wifi_ssid: Wi-Fi SSID
+  txt_wifi_bssid: Wi-Fi BSSID
+  txt_wifi_signal_db: WiFi Signal dB
+  txt_wifi_signal_percent: WiFi Signal Percent
+  txt_esp_free_memory_percent: ESP Percentage Free Memory
+  txt_esp_free_memory: ESP Free Memory
+  txt_esp_temperature: ESP Temperature
+  txt_core_temperature: Core Temperature
+  txt_ds18b20_temperature: Temperature
+  txt_bl0942_current: Current
+  txt_bl0942_energy: Energy
+  txt_bl0942_frequency: Frequency
+  txt_bl0942_power: Power
+  txt_bl0942_voltage: Voltage
+  txt_cal_current_reference: Cal Current Reference
+  txt_cal_energy_reference: Cal Energy Reference
+  txt_cal_max_deviation: Cal Max Deviation
+  txt_cal_power_reference: Cal Power Reference
+  txt_cal_target_current: Cal Target Current
+  txt_cal_target_power: Cal Target Power
+  txt_cal_target_voltage: Cal Target Voltage
+  txt_cal_voltage_reference: Cal Voltage Reference
+  txt_calibrate_current: Calibrate Current
+  txt_calibrate_power: Calibrate Power
+  txt_calibrate_voltage: Calibrate Voltage
+  txt_energy_today: Energy Today
+  txt_energy_total: Energy Total
+  txt_ntc_temperature: Temperature
+  txt_plug_auto_off_timer: Auto-Off Timer
+  txt_plug_button: Button
+  txt_plug_button_lock: Button Lock
+  txt_plug_fault_count: Fault Count
+  txt_plug_fault_lock: Fault Lock
+  txt_plug_last_fault: Last Fault
+  txt_plug_led: LED
+  txt_plug_mains_frequency_zero_cross: Mains frequency (zero-cross)
+  txt_plug_night_mode: Night Mode
+  txt_plug_night_mode_auto: Night Mode Auto
+  txt_plug_relay: Relay
+  txt_plug_relay_cycle_watch: Relay Cycle Watch
+  txt_plug_relay_cycles: Relay Cycles
+  txt_plug_relay_on_watch: Relay On Watch
+  txt_plug_standby_delay: Standby Delay
+  txt_plug_standby_killer: Standby Killer
+  txt_plug_standby_threshold: Standby Threshold
+  txt_plug_temperature_sensor_fault: Temperature Sensor Fault
+  txt_reset_calibration: Reset Calibration
+  txt_bme280_absolute_humidity: Absolute Humidity
+  txt_bme280_dew_point: Dew Point
+  txt_bme280_humidity: Humidity
+  txt_bme280_pressure: Pressure
+  txt_bme280_temperature: Temperature
+  txt_hlw8012_current: Current
+  txt_hlw8012_power: Power
+  txt_hlw8012_voltage: Voltage
+  txt_nous_a1t_status: Status
+  txt_nous_a1t_switch: Switch
+  txt_nous_a1t_vcc_volt: VCC Volt
+  txt_pid_fan_deadband_ki_multiplier: Deadband Ki Multiplier
+  txt_pid_fan_deadband_threshold_high: Deadband Threshold High
+  txt_pid_fan_deadband_threshold_low: Deadband Threshold Low
+  txt_pid_fan_derivative_gain_kd: Derivative Gain (Kd)
+  txt_pid_fan_fan_speed: Fan Speed
+  txt_pid_fan_integral_gain_ki: Integral Gain (Ki)
+  txt_pid_fan_is_in_deadband: is in deadband
+  txt_pid_fan_proportional_gain_kp: Proportional Gain (Kp)
+  txt_pm_mini_button: Button
+  txt_pytes_barcode: Barcode
+  txt_pytes_base_state: Base State
+  txt_pytes_bat_protect_ena: BAT Protect ENA
+  txt_pytes_battery_events: Battery Events
+  txt_pytes_battery_state: Battery State
+  txt_pytes_cells: Cells
+  txt_pytes_cmos_status: CMOS Status
+  txt_pytes_coulomb: Coulomb
+  txt_pytes_coulomb_state: Coulomb State
+  txt_pytes_current: Current
+  txt_pytes_current_state: Current State
+  txt_pytes_device_type: Device Type
+  txt_pytes_dmos_status: DMOS Status
+  txt_pytes_firm_version: Firm Version
+  txt_pytes_power_events: Power Events
+  txt_pytes_pwr_protect_ena: PWR Protect ENA
+  txt_pytes_real_coulomb: Real Coulomb
+  txt_pytes_soc_voltage: SOC Voltage
+  txt_pytes_state_of_charge: State of Charge
+  txt_pytes_system_fault: System Fault
+  txt_pytes_temperature: Temperature
+  txt_pytes_temperature_high: Temperature High
+  txt_pytes_temperature_low: Temperature Low
+  txt_pytes_temperature_state: Temperature State
+  txt_pytes_total_coulomb: Total Coulomb
+  txt_pytes_total_power_in: Total Power In
+  txt_pytes_total_power_out: Total Power Out
+  txt_pytes_voltage: Voltage
+  txt_pytes_voltage_high: Voltage High
+  txt_pytes_voltage_low: Voltage Low
+  txt_pytes_voltage_state: Voltage State
+  txt_pytes_work_status: Work Status
+  txt_pid_fan_climate_pid: Climate PID
+  txt_pid_fan_autotune_climate: Autotune PID
+  txt_pid_fan_autotune_start: Start autotune
+  txt_pid_fan_autotune_status: Autotune status
+  txt_pid_fan_calculated_error: Calculated Error
+  txt_pid_fan_deadband_kd_multiplier: Deadband Kd Multiplier
+  txt_pid_fan_deadband_kp_multiplier: Deadband Kp Multiplier
+  txt_pid_fan_deadband_output_samples: Deadband Output Samples
+  txt_pid_fan_derivative_samples: Derivative Samples
+  txt_pid_fan_derivative_term: Derivative term
+  txt_pid_fan_differential_factor: Differential factor
+  txt_pid_fan_duty_cycle: Duty Cycle
+  txt_pid_fan_integral_factor: Integral factor
+  txt_pid_fan_integral_term: Integral term
+  txt_pid_fan_maximal_integral: Maximal Integral
+  txt_pid_fan_minimal_integral: Minimal Integral
+  txt_pid_fan_output_samples: Output Samples
+  txt_pid_fan_pid_controller_action: pid controller action
+  txt_pid_fan_pid_controller_status: PID Controller Status
+  txt_pid_fan_proportional_factor: Proportional factor
+  txt_pid_fan_proportional_term: Proportional term
+  txt_pid_fan_resulting_value: Resulting value
+  txt_bme680_air_quality: Air Quality
+  txt_bme680_gas_baseline: Gas Baseline
+  txt_debug_cpu_frequency: CPU Frequency
+  txt_debug_device_info: Device Info
+  txt_debug_free_psram: Free PSRAM
+  txt_debug_heap_fragmentation: Heap Fragmentation
+  txt_debug_heap_free: Heap Free
+  txt_debug_heap_max_block: Heap Max Block
+  txt_debug_heap_min_free: Heap Min Free
+  txt_debug_loop_time: Loop Time
+  txt_debug_reset_reason: Reset Reason
+  txt_pzem_current: Current
+  txt_pzem_voltage: Voltage
+  txt_pzem_energy: Energy
+  txt_pzem_power: Power
+  txt_pzem_frequency: Frequency
+  txt_pzem_power_factor: Power Factor
+  txt_cse7766_current: Current
+  txt_cse7766_voltage: Voltage
+  txt_cse7766_power: Power
+  txt_cse7766_energy: Total Energy
+  txt_gosund_sp1_power_button: Power Button
+  txt_gosund_sp1_power_switch: Power Switch
+  txt_meross_button: Button
+  txt_meross_switch: Switch
+  txt_meross_led_red: LED Red
+  txt_meross_led_green: LED Green
+  txt_bmp280_temperature: Temperature
+  txt_bmp280_pressure: Pressure

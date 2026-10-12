@@ -1,0 +1,10 @@
+# Purpose:       RP2040 (Raspberry Pi Pico W) platform and board selection.
+# Requires:      none
+# Chip:          rp2040
+# Substitutions:
+#   rp2040_board: rpipicow - PlatformIO board name
+substitutions:
+  rp2040_board: rpipicow
+
+rp2:
+  board: ${rp2040_board}

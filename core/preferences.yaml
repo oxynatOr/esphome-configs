@@ -1,0 +1,10 @@
+# Purpose:       Interval for writing preferences (restored states) to flash. Larger values protect the flash.
+# Requires:      none
+# Chip:          any
+# Substitutions:
+#   preferences_flash_write_interval: 60s - ESPHome default
+substitutions:
+  preferences_flash_write_interval: 60s
+
+preferences:
+  flash_write_interval: ${preferences_flash_write_interval}

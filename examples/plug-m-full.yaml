@@ -1,0 +1,4 @@
+# plug-m with every add-on, including the failsafe. Local includes keep the example runnable before the repository is tagged.
+packages:
+  base: !include ../projects/plug-m/v3.yaml
+  failsafe: !include ../hardware/plugs/addons/failsafe.yaml

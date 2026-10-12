@@ -1,0 +1,7 @@
+# Purpose:       Time synchronised from Home Assistant (needs an API connection).
+# Requires:      core/api.yaml
+# Chip:          any
+# Substitutions: none
+time:
+  - platform: homeassistant
+    id: homeassistant_time

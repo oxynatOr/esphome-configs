@@ -1,0 +1,37 @@
+# Purpose:       Debug diagnostics for development: runtime statistics, heap, fragmentation, loop time, CPU frequency, reset reason.
+# Requires:      i18n/en.yaml
+# Chip:          esp32 (use debug-psram.yaml INSTEAD on boards with PSRAM)
+# Substitutions:
+#   debug_log_interval:    30s - how often runtime_stats are logged
+#   debug_update_interval: 5s  - update interval of the debug sensors
+substitutions:
+  debug_log_interval: 30s
+  debug_update_interval: 5s
+
+runtime_stats:
+  log_interval: ${debug_log_interval}
+
+debug:
+  update_interval: ${debug_update_interval}
+
+text_sensor:
+  - platform: debug
+    device:
+      name: ${txt_debug_device_info}
+    reset_reason:
+      name: ${txt_debug_reset_reason}
+
+sensor:
+  - platform: debug
+    free:
+      name: ${txt_debug_heap_free}
+    block:
+      name: ${txt_debug_heap_max_block}
+    min_free:
+      name: ${txt_debug_heap_min_free}
+    fragmentation:
+      name: ${txt_debug_heap_fragmentation}
+    loop_time:
+      name: ${txt_debug_loop_time}
+    cpu_frequency:
+      name: ${txt_debug_cpu_frequency}

@@ -1,0 +1,31 @@
+# Purpose:       Energy Today (daily reset) and Energy Total (integrated) in kWh from the power sensor bpower.
+# Requires:      id bpower, a time: platform, i18n/en.yaml
+# Chip:          any
+# Substitutions: none
+sensor:
+  - platform: total_daily_energy
+    name: ${txt_energy_today}
+    id: daily_energy
+    power_id: bpower
+    filters:
+      - multiply: 0.001
+    unit_of_measurement: "kWh"
+    state_class: total_increasing
+    icon: mdi:meter-electric
+    device_class: energy
+    accuracy_decimals: 3
+    restore: true
+
+  - platform: integration
+    name: ${txt_energy_total}
+    state_class: total
+    accuracy_decimals: 3
+    id: total_energy
+    icon: mdi:meter-electric-outline
+    sensor: bpower
+    device_class: energy
+    filters:
+      - multiply: 0.001
+    unit_of_measurement: "kWh"
+    time_unit: h
+    restore: true

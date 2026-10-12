@@ -25,5 +25,14 @@ packages:
 ```
 Home-Assistant-Entity-IDs entstehen aus dem Namen, ein in anderer Sprache adoptiertes Gerät bekommt andere IDs.
 
+## Was enthalten ist
+[docs/CATALOG.md](docs/CATALOG.md) listet jedes Package mit Zweck, Chip und Voraussetzungen (aus den Datei-Köpfen erzeugt).
+Fertige Geräte liegen in `projects/`, `examples/` zeigt, wie einzelne Bausteine kombiniert werden.
+
+## Mehrere Instanzen
+Batterien, PID-Lüfter und BME680-Sensoren werden pro Instanz mit `vars:` eingebunden und sind jeweils ein eigenes Sub-Gerät
+in Home Assistant, siehe [CONVENTIONS.md](CONVENTIONS.md#multi-instance-modules-and-sub-devices).
+
 ## Mitarbeit
-Siehe [CONVENTIONS.md](CONVENTIONS.md) und `python scripts/check.py` ausführen.
+[CONVENTIONS.md](CONVENTIONS.md) lesen, dann `python scripts/check.py` (Konventionen) und
+`python scripts/check.py --esphome` (ESPHome-Prüfung). Releases: `python scripts/bump-tag.py`.

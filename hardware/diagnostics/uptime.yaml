@@ -1,0 +1,48 @@
+# Purpose:       Uptime in seconds plus a human readable text (1d 2h 3m 4s) and the ESPHome version.
+# Requires:      i18n/en.yaml
+# Chip:          any
+# Substitutions:
+#   diag_uptime_update_interval: 60s  - update interval of both uptime entities
+#   diag_version_hide_timestamp: true - hide the build timestamp in the version text
+substitutions:
+  diag_uptime_update_interval: 60s
+  diag_version_hide_timestamp: "true"
+
+text_sensor:
+  - platform: template
+    name: ${txt_uptime}
+    id: uptime_human
+    icon: mdi:clock-start
+    entity_category: diagnostic
+    update_interval: ${diag_uptime_update_interval}
+
+  - platform: version
+    name: ${txt_esphome_version}
+    icon: mdi:alpha-v-circle-outline
+    hide_timestamp: ${diag_version_hide_timestamp}
+
+sensor:
+  - platform: uptime
+    name: ${txt_uptime_sensor}
+    id: dev_uptime
+    icon: mdi:timelapse
+    accuracy_decimals: 2
+    update_interval: ${diag_uptime_update_interval}
+    entity_category: diagnostic
+    on_raw_value:
+      then:
+        - text_sensor.template.publish:
+            id: uptime_human
+            state: !lambda |-
+              int seconds = round(id(dev_uptime).get_raw_state());
+              int days = seconds / (24 * 3600);
+              seconds = seconds % (24 * 3600);
+              int hours = seconds / 3600;
+              seconds = seconds % 3600;
+              int minutes = seconds / 60;
+              seconds = seconds % 60;
+              return (
+                (days ? to_string(days) + "d " : "") +
+                (hours ? to_string(hours) + "h " : "") +
+                (minutes ? to_string(minutes) + "m " : "") +
+                (to_string(seconds) + "s")).c_str();

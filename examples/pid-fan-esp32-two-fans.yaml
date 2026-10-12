@@ -1,0 +1,52 @@
+# Two fans on one ESP32: the module is included once per fan with vars (each fan becomes its own sub-device).
+# Local includes are used here so that the example also works before the repository is tagged.
+esphome:
+  name: example-two-fans
+
+esp32:
+  board: esp32dev
+
+wifi:
+  ap:
+
+logger:
+
+sensor:
+  # stand-ins for the real temperature sources
+  - platform: template
+    id: fan_temp_1
+    lambda: return 25.0;
+    unit_of_measurement: "°C"
+    update_interval: 10s
+  - platform: template
+    id: fan_temp_2
+    lambda: return 27.0;
+    unit_of_measurement: "°C"
+    update_interval: 10s
+
+packages:
+  i18n: !include ../i18n/en.yaml
+  pwm_1: !include
+    file: ../hardware/controllers/fan-pwm-ledc.yaml
+    vars:
+      pid_fan_id: "1"
+      pid_fan_pwm_pin: GPIO18
+  fan_1: !include
+    file: ../hardware/controllers/pid-fan.yaml
+    vars:
+      pid_fan_id: "1"
+      pid_fan_name: Rack fan
+      pid_fan_source_sensor: fan_temp_1
+      pid_fan_tacho_pin: GPIO19
+  pwm_2: !include
+    file: ../hardware/controllers/fan-pwm-ledc.yaml
+    vars:
+      pid_fan_id: "2"
+      pid_fan_pwm_pin: GPIO21
+  fan_2: !include
+    file: ../hardware/controllers/pid-fan.yaml
+    vars:
+      pid_fan_id: "2"
+      pid_fan_name: Rack fan
+      pid_fan_source_sensor: fan_temp_2
+      pid_fan_tacho_pin: GPIO22

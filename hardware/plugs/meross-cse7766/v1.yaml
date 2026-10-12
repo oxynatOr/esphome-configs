@@ -1,0 +1,54 @@
+# Purpose:       ESP8266 smart plug with CSE7766 meter (Meross-style): relay, button, red and green LED.
+# Requires:      i18n/en.yaml
+# Chip:          esp8266
+# Substitutions:
+#   meross_restore_mode: RESTORE_DEFAULT_ON - relay state after power loss
+#   meross_relay_pin / button_pin: GPIO13 / GPIO5
+#   meross_led_red_pin / led_green_pin: GPIO4 / GPIO14 (both inverted)
+# Note:          model unverified - this was the file plug-meross.yaml, check the pins against your unit.
+substitutions:
+  meross_restore_mode: RESTORE_DEFAULT_ON
+  meross_relay_pin: GPIO13
+  meross_button_pin: GPIO5
+  meross_led_red_pin: GPIO4
+  meross_led_green_pin: GPIO14
+
+packages:
+  board: github://OWNER/ioxys-esphome/hardware/boards/esp8266.yaml@v0.0.0
+  meter: github://OWNER/ioxys-esphome/hardware/power-monitoring/cse7766.yaml@v0.0.0
+
+binary_sensor:
+  - platform: gpio
+    name: ${txt_meross_button}
+    pin:
+      number: ${meross_button_pin}
+      inverted: true
+    on_press:
+      - switch.toggle: relay
+
+switch:
+  - platform: gpio
+    id: relay
+    name: ${txt_meross_switch}
+    pin: ${meross_relay_pin}
+    restore_mode: ${meross_restore_mode}
+    on_turn_on:
+      - switch.turn_on: led_green
+      - switch.turn_off: led_red
+    on_turn_off:
+      - switch.turn_off: led_green
+      - switch.turn_on: led_red
+
+  - platform: gpio
+    id: led_red
+    name: ${txt_meross_led_red}
+    pin:
+      number: ${meross_led_red_pin}
+      inverted: true
+
+  - platform: gpio
+    id: led_green
+    name: ${txt_meross_led_green}
+    pin:
+      number: ${meross_led_green_pin}
+      inverted: true

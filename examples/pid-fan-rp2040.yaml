@@ -1,0 +1,21 @@
+esphome:
+  name: example-pid-fan
+
+wifi:
+  ap:
+
+logger:
+
+sensor:
+  # stands in for the real temperature source (e.g. a Home Assistant sensor)
+  - platform: template
+    id: pid_fan_temperature_source
+    lambda: return 25.0;
+    unit_of_measurement: "°C"
+    update_interval: 10s
+
+packages:
+  board: github://OWNER/ioxys-esphome/hardware/boards/rp2040.yaml@v0.0.0
+  i18n: github://OWNER/ioxys-esphome/i18n/en.yaml@v0.0.0
+  pid_fan: github://OWNER/ioxys-esphome/hardware/controllers/pid-fan.yaml@v0.0.0
+  fan_pwm: github://OWNER/ioxys-esphome/hardware/controllers/fan-pwm-rp2040.yaml@v0.0.0

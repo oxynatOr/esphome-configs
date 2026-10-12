@@ -1,0 +1,18 @@
+esphome:
+  name: example-bmp280
+
+esp32:
+  board: esp32dev
+
+wifi:
+  ap:
+
+logger:
+
+i2c:
+  sda: GPIO21
+  scl: GPIO22
+
+packages:
+  i18n: github://OWNER/ioxys-esphome/i18n/en.yaml@v0.0.0
+  bmp280: github://OWNER/ioxys-esphome/hardware/sensors/bmp280.yaml@v0.0.0

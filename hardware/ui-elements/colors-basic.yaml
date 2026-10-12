@@ -1,0 +1,24 @@
+# Purpose:       Basic named colours (pure RGB values) for displays and LEDs: color_red, color_blue, ...
+# Requires:      none
+# Chip:          any
+# Substitutions: none
+# Note:          use INSTEAD of colors-flat-ui.yaml, both define the same ids.
+color:
+  - id: color_red
+    hex: FF0000
+  - id: color_blue
+    hex: 0000FF
+  - id: color_yellow
+    hex: FFFF00
+  - id: color_green
+    hex: 00FF00
+  - id: color_cyan
+    hex: 00FFFF
+  - id: color_white
+    hex: FFFFFF
+  - id: color_magenta
+    hex: FF00FF
+  - id: color_gold
+    hex: FFD700
+  - id: color_purple
+    hex: A020F0

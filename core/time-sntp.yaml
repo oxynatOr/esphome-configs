@@ -1,0 +1,22 @@
+# Purpose:       SNTP time source with up to three servers and a time zone.
+# Requires:      none
+# Chip:          any
+# Substitutions:
+#   time_timezone: Europe/Berlin       - IANA time zone
+#   time_server_1: pool.ntp.org        - override with your local NTP server if you have one
+#   time_server_2: ptbtime1.ptb.de
+#   time_server_3: ntp.rwth-aachen.de
+substitutions:
+  time_timezone: Europe/Berlin
+  time_server_1: pool.ntp.org
+  time_server_2: ptbtime1.ptb.de
+  time_server_3: ntp.rwth-aachen.de
+
+time:
+  - platform: sntp
+    id: sntp_time
+    timezone: ${time_timezone}
+    servers:
+      - ${time_server_1}
+      - ${time_server_2}
+      - ${time_server_3}

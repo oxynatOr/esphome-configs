@@ -1,0 +1,18 @@
+esphome:
+  name: example-diag-esp32
+
+wifi:
+  ap:
+
+logger:
+
+
+packages:
+  board: github://OWNER/ioxys-esphome/hardware/boards/esp32.yaml@v0.0.0
+  i18n: github://OWNER/ioxys-esphome/i18n/en.yaml@v0.0.0
+  uptime: github://OWNER/ioxys-esphome/hardware/diagnostics/uptime.yaml@v0.0.0
+  wifi: github://OWNER/ioxys-esphome/hardware/diagnostics/wifi.yaml@v0.0.0
+  esp32: github://OWNER/ioxys-esphome/hardware/diagnostics/esp32.yaml@v0.0.0
+  time-sntp: github://OWNER/ioxys-esphome/core/time-sntp.yaml@v0.0.0
+  static: github://OWNER/ioxys-esphome/core/wifi/static.yaml@v0.0.0
+  preferences: github://OWNER/ioxys-esphome/core/preferences.yaml@v0.0.0

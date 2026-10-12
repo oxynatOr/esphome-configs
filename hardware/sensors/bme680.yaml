@@ -1,0 +1,157 @@
+# Purpose:       BME680 (I2C) as its own sub-device: temperature, humidity, pressure, gas, dew point, absolute humidity, air quality score.
+# Requires:      an i2c: bus with id ${bme680_i2c_id} (not defined here so that several sensors share one bus), i18n/en.yaml
+# Chip:          any
+# Substitutions:
+#   bme680_id: 1 / bme680_name: Air sensor - the sub-device is 'Air sensor 1', ids bme680_1_*; include with vars once per sensor
+#   bme680_i2c_id: i2c_bus - id of the i2c: bus (defined once in your config) / bme680_address: 0x77 (0x76 with SDO to GND)
+#   bme680_update_interval: 60s / bme680_iir_filter: 3x / bme680_oversampling_temp/hum/press: 16x
+#   bme680_heater_temperature: 320 (C, 200-400) / bme680_heater_duration: 150ms
+#   bme680_temp_offset: -1.5 (self-heating) / bme680_hum_offset / bme680_press_offset: 0.0
+# Air quality is a heuristic (gas resistance against a slowly adapting clean-air baseline plus humidity), not BSEC IAQ.
+substitutions:
+  bme680_id: "1"
+  bme680_name: Air sensor
+  bme680_i2c_id: i2c_bus
+  bme680_address: "0x77"
+  bme680_update_interval: "60s"
+  bme680_iir_filter: "3x"
+  bme680_oversampling_temp: "16x"
+  bme680_oversampling_hum: "16x"
+  bme680_oversampling_press: "16x"
+  bme680_heater_temperature: "320"
+  bme680_heater_duration: "150ms"
+  bme680_temp_offset: "-1.5"
+  bme680_hum_offset: "0.0"
+  bme680_press_offset: "0.0"
+
+esphome:
+  devices:
+    - id: bme680_${bme680_id}
+      name: "${bme680_name} ${bme680_id}"
+
+globals:
+  - id: bme680_${bme680_id}_gas_baseline
+    type: float
+    restore_value: true
+    initial_value: '0'
+
+sensor:
+  - platform: bme680
+    address: ${bme680_address}
+    i2c_id: ${bme680_i2c_id}
+    update_interval: ${bme680_update_interval}
+    iir_filter: ${bme680_iir_filter}
+
+    heater:
+      temperature: ${bme680_heater_temperature}
+      duration: ${bme680_heater_duration}
+
+    temperature:
+      name: ${txt_bme680_temperature}
+      id: bme680_${bme680_id}_temperature
+      device_id: bme680_${bme680_id}
+      oversampling: ${bme680_oversampling_temp}
+      accuracy_decimals: 1
+      filters:
+        - offset: ${bme680_temp_offset}
+
+    humidity:
+      name: ${txt_bme680_humidity}
+      id: bme680_${bme680_id}_humidity
+      device_id: bme680_${bme680_id}
+      oversampling: ${bme680_oversampling_hum}
+      accuracy_decimals: 1
+      filters:
+        - offset: ${bme680_hum_offset}
+
+    pressure:
+      name: ${txt_bme680_pressure}
+      id: bme680_${bme680_id}_pressure
+      device_id: bme680_${bme680_id}
+      oversampling: ${bme680_oversampling_press}
+      accuracy_decimals: 1
+      filters:
+        - offset: ${bme680_press_offset}
+
+    gas_resistance:
+      name: ${txt_bme680_gas_resistance}
+      id: bme680_${bme680_id}_gas
+      device_id: bme680_${bme680_id}
+      entity_category: "diagnostic"
+      accuracy_decimals: 0
+  - platform: template
+    name: ${txt_bme680_dew_point}
+    id: bme680_${bme680_id}_dewpoint
+    device_id: bme680_${bme680_id}
+    unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
+    icon: "mdi:thermometer-water"
+    accuracy_decimals: 1
+    update_interval: ${bme680_update_interval}
+    lambda: |-
+      const float t = id(bme680_${bme680_id}_temperature).state;
+      const float rh = id(bme680_${bme680_id}_humidity).state;
+      if (isnan(t) || isnan(rh) || rh <= 0.0f) return NAN;
+
+      const float a = 17.62f, b = 243.12f;
+      const float gamma = (a * t) / (b + t) + logf(rh / 100.0f);
+      return (b * gamma) / (a - gamma);
+  - platform: template
+    name: ${txt_bme680_absolute_humidity}
+    id: bme680_${bme680_id}_abs_humidity
+    device_id: bme680_${bme680_id}
+    unit_of_measurement: "g/m³"
+    state_class: "measurement"
+    icon: "mdi:water-opacity"
+    accuracy_decimals: 2
+    update_interval: ${bme680_update_interval}
+    lambda: |-
+      const float t = id(bme680_${bme680_id}_temperature).state;
+      const float rh = id(bme680_${bme680_id}_humidity).state;
+      if (isnan(t) || isnan(rh)) return NAN;
+
+      // saturation vapour pressure (Magnus) in hPa
+      const float es = 6.112f * expf((17.67f * t) / (t + 243.5f));
+      return (es * rh * 2.1674f) / (273.15f + t);
+  - platform: template
+    name: ${txt_bme680_air_quality}
+    id: bme680_${bme680_id}_iaq
+    device_id: bme680_${bme680_id}
+    unit_of_measurement: "%"
+    state_class: "measurement"
+    icon: "mdi:air-filter"
+    accuracy_decimals: 0
+    update_interval: ${bme680_update_interval}
+    lambda: |-
+      const float gas = id(bme680_${bme680_id}_gas).state;
+      const float rh  = id(bme680_${bme680_id}_humidity).state;
+      if (isnan(gas) || isnan(rh) || gas <= 0.0f) return NAN;
+
+      // Baseline: rises fast, falls very slowly.
+      // clean Luft liefert den hoechsten Widerstand, den merken wir uns.
+      float bl = id(bme680_${bme680_id}_gas_baseline);
+      if (bl <= 0.0f) bl = gas;
+      bl += (gas > bl) ? (gas - bl) * 0.05f : (gas - bl) * 0.0005f;
+      id(bme680_${bme680_id}_gas_baseline) = bl;
+
+      float gas_score = gas / bl;
+      if (gas_score > 1.0f) gas_score = 1.0f;
+      if (gas_score < 0.0f) gas_score = 0.0f;
+
+      // Optimum at 40 % RH, linear falloff to both sides
+      float hum_score = 1.0f - fabsf(rh - 40.0f) / 40.0f;
+      if (hum_score < 0.0f) hum_score = 0.0f;
+
+      return (gas_score * 0.75f + hum_score * 0.25f) * 100.0f;
+  - platform: template
+    name: ${txt_bme680_gas_baseline}
+    id: bme680_${bme680_id}_gas_baseline_sensor
+    device_id: bme680_${bme680_id}
+    unit_of_measurement: "Ω"
+    entity_category: "diagnostic"
+    accuracy_decimals: 0
+    update_interval: ${bme680_update_interval}
+    lambda: |-
+      const float bl = id(bme680_${bme680_id}_gas_baseline);
+      return (bl > 0.0f) ? bl : NAN;

@@ -10,3 +10,7 @@ rules:
   indentation:
     spaces: 2
     indent-sequences: true
+
+ignore: |
+  __ESPHOME__/
+  private/

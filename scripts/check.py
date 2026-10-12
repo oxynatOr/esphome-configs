@@ -2,11 +2,13 @@
 """Consistency checks for ioxys-esphome (see CONVENTIONS.md).
 
 Usage: python scripts/check.py [--esphome]
-  --esphome  additionally run `esphome config` for every file in projects/
+  --esphome  additionally run `esphome config` for every file in projects/ and examples/
              (needs esphome installed and a secrets.yaml next to the repo root)
 """
+import importlib.util
 import re
 import shutil
+import tempfile
 import subprocess
 import sys
 from pathlib import Path
@@ -17,7 +19,7 @@ ROOT = Path(__file__).resolve().parent.parent
 CONTENT_DIRS = ["core", "hardware", "i18n", "projects", "examples", "templates"]
 HEADER_DIRS = {"core", "hardware", "i18n", "projects", "templates"}
 TAG_DIRS = {"core", "hardware", "i18n", "projects"}
-ALLOWED_SECRETS = {"wifi_ssid", "wifi_password"}
+ALLOWED_SECRETS = {"wifi_ssid", "wifi_password", "wifi_ap_password"}
 PROJECT_PREFIX = "ioxys."
 DOC_IP_PREFIXES = ("192.0.2.", "198.51.100.", "203.0.113.", "0.0.0.0", "255.255.255.")
 
@@ -142,6 +144,7 @@ def main():
         err(ROOT / "README.md", f"mixed @refs in one release: {sorted(refs)}")
 
     check_i18n(parsed)
+    check_catalog()
 
     if run_esphome:
         run_esphome_config()
@@ -191,6 +194,16 @@ def check_i18n(parsed):
                 err(path, f"uses ${{{ref}}} which is not defined in en.yaml")
 
 
+def check_catalog():
+    """docs/CATALOG.md must match the header blocks (python scripts/gen-catalog.py)"""
+    spec = importlib.util.spec_from_file_location("gen_catalog", ROOT / "scripts" / "gen-catalog.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    target = ROOT / "docs" / "CATALOG.md"
+    if not target.exists() or target.read_text(encoding="utf-8") != module.build():
+        errors.append("docs/CATALOG.md: stale - run python scripts/gen-catalog.py")
+
+
 def run_esphome_config():
     exe = shutil.which("esphome")
     if not exe:
@@ -199,11 +212,26 @@ def run_esphome_config():
     if not (ROOT / "secrets.yaml").exists():
         errors.append("--esphome needs secrets.yaml (copy secrets.example.yaml)")
         return
-    for path in sorted((ROOT / "projects").rglob("*.yaml")):
-        res = subprocess.run([exe, "config", str(path)], capture_output=True, text=True, cwd=ROOT)
-        if res.returncode != 0:
-            tail = (res.stdout + res.stderr).strip().splitlines()[-1:]
-            err(path, "esphome config failed: " + " ".join(tail))
+    # remote refs (github://owner/repo/<path>@tag) are replaced by local includes in a temp copy
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp = Path(tmp)
+        ref_line = re.compile(r"^(\s*(?!package_import_url)[A-Za-z0-9_-]+:\s*)github://[^/\s]+/[^/\s]+/(\S+?)@\S+\s*$", re.M)
+        for d in ("core", "hardware", "i18n", "projects", "examples"):
+            for src in (ROOT / d).rglob("*.yaml"):
+                dst = tmp / src.relative_to(ROOT)
+                dst.parent.mkdir(parents=True, exist_ok=True)
+                text = src.read_text(encoding="utf-8")
+                text = ref_line.sub(lambda m: f"{m.group(1)}!include {(tmp / m.group(2)).as_posix()}", text)
+                dst.write_text(text, encoding="utf-8", newline="\n")
+        targets = sorted((tmp / "projects").rglob("*.yaml")) + sorted((tmp / "examples").rglob("*.yaml"))
+        for path in targets:
+            shutil.copy(ROOT / "secrets.yaml", path.parent / "secrets.yaml")  # !secret is resolved next to the main config
+            res = subprocess.run([exe, "config", str(path)], capture_output=True, text=True, cwd=tmp)
+            if res.returncode != 0:
+                lines = (res.stdout + res.stderr).strip().splitlines()
+                at = next((i for i, l in enumerate(lines) if l.startswith("Failed config")), None)
+                tail = [l for l in lines[at + 1:at + 14] if l.strip()][:6] if at is not None else lines[-8:]
+                err(ROOT / path.relative_to(tmp), "esphome config failed:\n      " + "\n      ".join(tail))
 
 
 if __name__ == "__main__":

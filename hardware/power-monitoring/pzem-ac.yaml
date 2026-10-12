@@ -1,0 +1,52 @@
+# Purpose:       PZEM-004T AC energy meter over Modbus: current, voltage, energy, power, frequency, power factor.
+# Requires:      a modbus: component on a uart: (see examples/power-pzem-ac.yaml), i18n/en.yaml
+# Chip:          any
+# Substitutions:
+#   pzem_address:         1   - Modbus address of the module
+#   pzem_update_interval: 10s
+substitutions:
+  pzem_address: "1"
+  pzem_update_interval: 10s
+
+sensor:
+  - platform: pzemac
+    address: ${pzem_address}
+    update_interval: ${pzem_update_interval}
+    current:
+      name: ${txt_pzem_current}
+      unit_of_measurement: A
+      device_class: current
+      state_class: measurement
+      accuracy_decimals: 2
+    voltage:
+      name: ${txt_pzem_voltage}
+      unit_of_measurement: V
+      device_class: voltage
+      state_class: measurement
+      accuracy_decimals: 2
+    energy:
+      name: ${txt_pzem_energy}
+      unit_of_measurement: kWh
+      device_class: energy
+      state_class: total_increasing
+      accuracy_decimals: 2
+      filters:
+        # the module reports Wh
+        - multiply: 0.001
+    power:
+      name: ${txt_pzem_power}
+      unit_of_measurement: W
+      device_class: power
+      state_class: measurement
+      accuracy_decimals: 2
+    frequency:
+      name: ${txt_pzem_frequency}
+      unit_of_measurement: Hz
+      device_class: frequency
+      state_class: measurement
+      accuracy_decimals: 2
+    power_factor:
+      name: ${txt_pzem_power_factor}
+      device_class: power_factor
+      state_class: measurement
+      accuracy_decimals: 2

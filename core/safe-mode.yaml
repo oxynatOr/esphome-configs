@@ -1,0 +1,19 @@
+# Purpose:       Safe mode: after repeated failed boots the device waits for an OTA update instead of rebooting forever.
+# Requires:      none
+# Chip:          any
+# Substitutions:
+#   safe_mode_disabled:            false - true switches safe mode off
+#   safe_mode_boot_is_good_after:  1min  - uptime after which a boot counts as good
+#   safe_mode_reboot_timeout:      5min  - how long safe mode waits for an update before rebooting
+#   safe_mode_num_attempts:        10    - failed boots before entering safe mode
+substitutions:
+  safe_mode_disabled: "false"
+  safe_mode_boot_is_good_after: 1min
+  safe_mode_reboot_timeout: 5min
+  safe_mode_num_attempts: "10"
+
+safe_mode:
+  disabled: ${safe_mode_disabled}
+  boot_is_good_after: ${safe_mode_boot_is_good_after}
+  reboot_timeout: ${safe_mode_reboot_timeout}
+  num_attempts: ${safe_mode_num_attempts}

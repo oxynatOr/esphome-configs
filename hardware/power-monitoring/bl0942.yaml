@@ -1,0 +1,73 @@
+# Purpose:       BL0942 energy meter over UART: voltage, current, power, energy, frequency (ids bl0942_1, bvoltage, bcurrent, bpower, benergy, bfreq).
+# Requires:      i18n/en.yaml
+# Chip:          any
+# Substitutions:
+#   bl0942_tx_pin / bl0942_rx_pin: GPIO4 / GPIO5 - UART pins, set by the plug revision
+#   bl0942_update_interval: 1s
+#   bl0942_*_reference: ESPHome defaults - calibrate with bl0942-calibration.yaml
+substitutions:
+  bl0942_tx_pin: GPIO4
+  bl0942_rx_pin: GPIO5
+  bl0942_update_interval: 1s
+  bl0942_voltage_reference: "15883.34116"
+  bl0942_current_reference: "251065.6814"
+  bl0942_power_reference: "623.0270705"
+  bl0942_energy_reference: "5347.484240"
+
+uart:
+  id: uart_0
+  tx_pin: ${bl0942_tx_pin}
+  rx_pin:
+    number: ${bl0942_rx_pin}
+    mode:
+      input: true
+      pullup: true
+  baud_rate: 9600
+  data_bits: 8
+  parity: NONE
+  stop_bits: 1
+  rx_full_threshold: 23
+
+sensor:
+  - platform: bl0942
+    id: bl0942_1
+    uart_id: uart_0
+    update_interval: ${bl0942_update_interval}
+    voltage_reference: ${bl0942_voltage_reference}
+    current_reference: ${bl0942_current_reference}
+    power_reference: ${bl0942_power_reference}
+    energy_reference: ${bl0942_energy_reference}
+    voltage:
+      name: ${txt_bl0942_voltage}
+      id: bvoltage
+      icon: mdi:alpha-v-circle-outline
+      device_class: voltage
+      state_class: measurement
+      unit_of_measurement: "V"
+    current:
+      name: ${txt_bl0942_current}
+      id: bcurrent
+      icon: mdi:alpha-a-circle-outline
+      unit_of_measurement: "A"
+      device_class: current
+      state_class: measurement
+    power:
+      name: ${txt_bl0942_power}
+      id: bpower
+      unit_of_measurement: W
+      icon: mdi:transmission-tower
+      device_class: power
+      state_class: measurement
+    energy:
+      name: ${txt_bl0942_energy}
+      id: benergy
+      icon: mdi:lightning-bolt
+      device_class: energy
+      state_class: total_increasing
+    frequency:
+      name: ${txt_bl0942_frequency}
+      id: bfreq
+      accuracy_decimals: 2
+      icon: mdi:cosine-wave
+      device_class: frequency
+      state_class: measurement

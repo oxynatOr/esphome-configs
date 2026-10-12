@@ -1,0 +1,57 @@
+# Purpose:       Shelly Plug S Gen3 hardware: ESP32-C3, relay, button, 4-LED ring, BL0942, NTC.
+# Requires:      i18n/en.yaml
+# Chip:          esp32-c3
+# Substitutions:
+#   plug_relay_pin: GPIO4
+#   plug_s_led_pin: GPIO5
+#   bl0942_tx_pin / bl0942_rx_pin: GPIO7 / GPIO6
+#   ntc_pin / ntc_b_constant / ntc_attenuation: GPIO3 / 3350 / 12db
+#   plug_s_flash_size: 8MB - verify on your unit
+#   plug_led_restore_mode: RESTORE_DEFAULT_ON
+substitutions:
+  plug_relay_pin: GPIO4
+  plug_s_led_pin: GPIO5
+  bl0942_tx_pin: GPIO7
+  bl0942_rx_pin: GPIO6
+  ntc_pin: GPIO3
+  ntc_b_constant: "3350"
+  ntc_attenuation: 12db
+  plug_s_flash_size: 8MB
+  plug_led_restore_mode: RESTORE_DEFAULT_ON
+
+packages:
+  bl0942: github://OWNER/ioxys-esphome/hardware/power-monitoring/bl0942.yaml@v0.0.0
+  ntc: github://OWNER/ioxys-esphome/hardware/sensors/ntc-temperature.yaml@v0.0.0
+
+esp32:
+  board: esp32-c3-devkitm-1
+  variant: esp32c3
+  flash_size: ${plug_s_flash_size}
+  framework:
+    type: esp-idf
+
+switch:
+  - platform: gpio
+    id: relay
+    name: ${txt_plug_relay}
+    pin: ${plug_relay_pin}
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  # Child lock. Persistent, so unplugging the plug does not release it.
+  - platform: template
+    id: button_lock
+    name: ${txt_plug_button_lock}
+    icon: "mdi:lock"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+light:
+  - platform: esp32_rmt_led_strip
+    name: ${txt_plug_led}
+    chipset: WS2812
+    channel_colors: GRB
+    pin: ${plug_s_led_pin}
+    num_leds: 4
+    id: rgb_lights
+    default_transition_length: 0ms
+    restore_mode: ${plug_led_restore_mode}

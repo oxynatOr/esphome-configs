@@ -1,6 +1,7 @@
-# Purpose:       Over-the-air updates via the ESPHome platform.
+# Purpose:       Over-the-air updates via the ESPHome platform. The id lets other packages (status LED) hook into it.
 # Requires:      none
 # Chip:          any
 # Substitutions: none
 ota:
   - platform: esphome
+    id: ota_esphome

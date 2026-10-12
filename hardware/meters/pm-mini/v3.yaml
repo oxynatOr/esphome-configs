@@ -1,0 +1,43 @@
+# Purpose:       Shelly PM Mini Gen3 hardware: ESP32-C3, BL0942, NTC, status LED, button (no relay).
+# Requires:      i18n/en.yaml
+# Chip:          esp32-c3
+# Substitutions:
+#   bl0942_tx_pin / bl0942_rx_pin: GPIO6 / GPIO7
+#   ntc_pin / ntc_b_constant / ntc_attenuation: GPIO3 / 3350 / 12db
+#   pm_mini_flash_size: 4MB - verify on your unit
+#   pm_mini_led_pin / pm_mini_button_pin: GPIO0 / GPIO1
+substitutions:
+  bl0942_tx_pin: GPIO6
+  bl0942_rx_pin: GPIO7
+  ntc_pin: GPIO3
+  ntc_b_constant: "3350"
+  ntc_attenuation: 12db
+  pm_mini_flash_size: 4MB
+  pm_mini_led_pin: GPIO0
+  pm_mini_button_pin: GPIO1
+
+packages:
+  bl0942: github://OWNER/ioxys-esphome/hardware/power-monitoring/bl0942.yaml@v0.0.0
+  ntc: github://OWNER/ioxys-esphome/hardware/sensors/ntc-temperature.yaml@v0.0.0
+
+esp32:
+  board: esp32-c3-devkitm-1
+  variant: esp32c3
+  flash_size: ${pm_mini_flash_size}
+  framework:
+    type: esp-idf
+
+status_led:
+  pin:
+    number: ${pm_mini_led_pin}
+    inverted: true
+
+binary_sensor:
+  - platform: gpio
+    name: ${txt_pm_mini_button}
+    pin:
+      number: ${pm_mini_button_pin}
+      inverted: true
+      mode:
+        input: true
+        pullup: true

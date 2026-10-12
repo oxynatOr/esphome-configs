@@ -1,0 +1,28 @@
+# Purpose:       Zero-cross switching of the relay (third-party component).
+# Requires:      plug-m/v3.yaml
+# Chip:          esp32-c3
+# Substitutions: none
+#
+# Additional config: zero-cross switching of the relay (optional).
+# Replaces the plain `gpio` relay switch of config.yaml, so remove the `switch:` entry with `id: relay` there
+# (or use this file instead of it). Custom component: https://github.com/oxynatOr/esphome-shelly_zx_switch
+
+external_components:
+  - source:
+      type: git
+      url: https://github.com/oxynatOr/esphome-shelly_zx_switch
+    components: [shelly_zx_switch]
+
+switch:
+  - platform: shelly_zx_switch
+    id: relay
+    name: ${txt_plug_relay}
+    relay_pin: GPIO0
+    uart_id: uart_0 # bus of the BL0942; used to switch its pin from CF pulses to zero-cross output
+    zx_pin:
+      number: GPIO3
+      mode: INPUT_PULLUP
+    zx_edge: ANY # level flips at every zero crossing (~6000 edges/min at 50 Hz)
+    restore_mode: RESTORE_DEFAULT_OFF
+    frequency:
+      name: ${txt_plug_mains_frequency_zero_cross}

@@ -1,0 +1,60 @@
+# Purpose:       Shelly Plug M Gen3 hardware: ESP32-C3, relay, RGB LED, BL0942, NTC.
+# Requires:      i18n/en.yaml
+# Chip:          esp32-c3
+# Substitutions:
+#   plug_relay_pin: GPIO0
+#   bl0942_tx_pin / bl0942_rx_pin: GPIO4 / GPIO5
+#   ntc_pin / ntc_b_constant / ntc_attenuation: GPIO1 / 3950 / 12db
+substitutions:
+  plug_relay_pin: GPIO0
+  bl0942_tx_pin: GPIO4
+  bl0942_rx_pin: GPIO5
+  ntc_pin: GPIO1
+  ntc_b_constant: "3950"
+  ntc_attenuation: 12db
+
+packages:
+  bl0942: github://OWNER/ioxys-esphome/hardware/power-monitoring/bl0942.yaml@v0.0.0
+  ntc: github://OWNER/ioxys-esphome/hardware/sensors/ntc-temperature.yaml@v0.0.0
+
+esp32:
+  board: esp32-c3-devkitm-1
+  variant: esp32c3
+  flash_size: 8MB
+  framework:
+    type: esp-idf
+
+switch:
+  - platform: gpio
+    id: relay
+    name: ${txt_plug_relay}
+    pin: ${plug_relay_pin}
+    restore_mode: RESTORE_DEFAULT_OFF
+
+output:
+  - platform: ledc
+    pin:
+      number: GPIO18
+      inverted: true
+    id: led_red
+    frequency: 1000Hz
+  - platform: ledc
+    pin:
+      number: GPIO10
+      inverted: true
+    id: led_green
+    frequency: 1000Hz
+  - platform: ledc
+    pin:
+      number: GPIO19
+      inverted: true
+    id: led_blue
+    frequency: 1000Hz
+
+light:
+  - platform: rgb
+    id: rgb_lights
+    name: ${txt_plug_led}
+    red: led_red
+    green: led_green
+    blue: led_blue

@@ -1,10 +1,26 @@
 # Purpose:       WiFi with DHCP and fallback access point. For non-adopted use; an adoption stub brings its own wifi block.
-# Requires:      secrets wifi_ssid, wifi_password
+# Requires:      secrets wifi_ssid, wifi_password, wifi_ap_password
 # Chip:          any
-# Substitutions: none
+# Substitutions:
+#   wifi_fast_connect:    false - connect to the last known network without scanning
+#   wifi_power_save_mode: LIGHT - NONE, LIGHT or HIGH
+#   wifi_min_auth_mode:   WPA2  - lowest accepted authentication mode
+#   wifi_hidden:          false - true if the network does not broadcast its SSID
+substitutions:
+  wifi_fast_connect: "false"
+  wifi_power_save_mode: LIGHT
+  wifi_min_auth_mode: WPA2
+  wifi_hidden: "false"
+
 wifi:
-  ssid: !secret wifi_ssid
-  password: !secret wifi_password
+  fast_connect: ${wifi_fast_connect}
+  power_save_mode: ${wifi_power_save_mode}
+  min_auth_mode: ${wifi_min_auth_mode}
+  networks:
+    - ssid: !secret wifi_ssid
+      password: !secret wifi_password
+      hidden: ${wifi_hidden}
   ap:
+    password: !secret wifi_ap_password
 
 captive_portal:

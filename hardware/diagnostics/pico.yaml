@@ -1,0 +1,21 @@
+# Purpose:       Raspberry Pi Pico (W) diagnostics: core temperature and the onboard LED as output.
+# Requires:      i18n/en.yaml; combine with uptime.yaml and wifi.yaml for uptime and signal
+# Chip:          rp2040
+# Substitutions:
+#   diag_pico_update_interval: 60s    - update interval of the core temperature
+#   diag_pico_led_pin:         LED    - onboard LED (Pico W: wireless LED, plain Pico: GPIO25)
+substitutions:
+  diag_pico_update_interval: 60s
+  diag_pico_led_pin: LED
+
+sensor:
+  - platform: internal_temperature
+    name: ${txt_core_temperature}
+    id: pico_temperature
+    update_interval: ${diag_pico_update_interval}
+    entity_category: diagnostic
+
+output:
+  - platform: gpio
+    pin: ${diag_pico_led_pin}
+    id: led_pico

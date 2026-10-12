@@ -1,0 +1,120 @@
+# Purpose:       Status display on the single RGB LED: effects Live Current, Live Power, Live Temperature plus fault/warning/status colours.
+# Requires:      relay-protection.yaml, status.yaml, plug-m/v3.yaml (id rgb_lights, relay, bcurrent, bpower, ntc_temp)
+# Chip:          esp32
+# Substitutions:
+#   plug_warn_ratio: 0.8 - pre-warning at this fraction of a limit
+#   plug_power_bar_min: 2 - W, bottom of the logarithmic power scale
+#   plug_night_brightness: 0.05 - LED brightness factor in night mode
+substitutions:
+  plug_warn_ratio: "0.8"
+  plug_power_bar_min: "2"
+  plug_night_brightness: "0.05"
+
+esphome:
+  on_boot:
+    - priority: 15.0
+      then:
+        - light.turn_on:
+            id: rgb_lights
+            effect: "Live Current"
+
+script:
+  # Render the status colour on the single RGB LED.
+  # kind: 0=Live Current, 1=Live Power, 2=Live Temperature
+  - id: led_render
+    mode: single
+    parameters:
+      kind: int
+    then:
+      - lambda: |-
+          const uint32_t now = millis();
+
+          // Live readings (fall back to harmless values until the first sample arrives)
+          const float cur = (id(bcurrent).has_state() && !std::isnan(id(bcurrent).state)) ? id(bcurrent).state : 0.0f;
+          const float pwr = (id(bpower).has_state() && !std::isnan(id(bpower).state)) ? id(bpower).state : 0.0f;
+          const float tmp = (id(ntc_temp).has_state() && !std::isnan(id(ntc_temp).state)) ? id(ntc_temp).state : 25.0f;
+
+          // Pre-warning: any value at or above warn_ratio of its limit (held for 1.5 s)
+          const float wr = (float)(${plug_warn_ratio});
+          if (cur >= wr * (float)(${plug_max_current}) || pwr >= wr * (float)(${plug_max_power}) || tmp >= wr * (float)(${plug_max_temp})) {
+            id(warn_hold_until) = now + 1500;
+          }
+
+          const float nf = id(night_active) ? (float) (${plug_night_brightness}) : 1.0f;
+          bool dim = true;  // night-mode dimming applies unless a priority branch clears it
+          float r = 0.0f, g = 0.0f, b = 0.0f;
+
+          if (id(fault_active)) {
+            // PRIO 1: fault latched - red breathing
+            dim = false;
+            float p = (sinf(now * 0.004f) + 1.0f) / 2.0f;
+            r = 0.12f + p * 0.47f;
+          } else if (id(ntc_bad)) {
+            // PRIO 2: temperature sensor fault (protection is blind) - magenta slow blink
+            dim = false;
+            if ((now / 600) % 2 == 0) { r = 0.8f; b = 0.8f; }
+          } else if ((int32_t)(id(warn_hold_until) - now) > 0) {
+            // PRIO 3: pre-warning - amber blink
+            dim = false;
+            if ((now / 250) % 2 == 0) { r = 1.0f; g = 0.47f; }
+          } else if (id(system_status) == 1) {
+            // PRIO 4: no Wi-Fi - red pulse
+            r = (sinf(now * 0.005f) + 1.0f) / 2.0f;
+          } else if (id(system_status) == 2) {
+            // PRIO 4: no API client - amber pulse
+            float pulse = (sinf(now * 0.003f) + 1.0f) / 2.0f;
+            r = pulse * 0.9f;
+            g = pulse * 0.24f;
+          } else if (id(system_status) == 3) {
+            // PRIO 4: OTA update - blue blink
+            if ((now / 150) % 2 == 0) b = 1.0f; else b = 0.08f;
+          } else {
+            // PRIO 5: the effect itself
+            float frac = 0.0f;
+            if (kind == 0) {
+              // Live Current: 0 .. max_current, linear
+              frac = cur / (float)(${plug_max_current});
+            } else if (kind == 1) {
+              // Live Power: power_bar_min .. max_power on a logarithmic scale
+              const float pmin = (float)(${plug_power_bar_min});
+              const float pmax = (float)(${plug_max_power});
+              if (pwr > pmin && pmax > pmin) frac = (log10f(pwr) - log10f(pmin)) / (log10f(pmax) - log10f(pmin));
+            } else {
+              // Live Temperature: 25 °C (blue) .. max_temp (red)
+              frac = (tmp - 25.0f) / ((float)(${plug_max_temp}) - 25.0f);
+            }
+            if (frac > 1.0f) frac = 1.0f;
+            if (frac < 0.0f) frac = 0.0f;
+            if (kind == 2) {
+              // blue -> green -> red
+              if (frac < 0.5f) { g = frac * 2.0f; b = 1.0f - g; }
+              else { r = (frac - 0.5f) * 2.0f; g = 1.0f - r; }
+            } else if (id(relay).state) {
+              // relay on: green -> red (no load = green); relay off: LED dark
+              r = frac;
+              g = 1.0f - frac;
+            }
+          }
+
+          if (dim && nf < 1.0f) { r *= nf; g *= nf; b *= nf; }
+          auto call = id(rgb_lights).turn_on();
+          call.set_transition_length(0);
+          call.set_rgb(r, g, b);
+          call.perform();
+
+light:
+  - id: !extend rgb_lights
+    default_transition_length: 0ms
+    effects:
+      - lambda:
+          name: "Live Current"
+          update_interval: 50ms
+          lambda: "id(led_render).execute(0);"
+      - lambda:
+          name: "Live Power"
+          update_interval: 50ms
+          lambda: "id(led_render).execute(1);"
+      - lambda:
+          name: "Live Temperature"
+          update_interval: 50ms
+          lambda: "id(led_render).execute(2);"

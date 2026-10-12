@@ -1,0 +1,41 @@
+# Purpose:       Simple overload cutoff for plugs without a temperature sensor: relay off above a current or power limit, notification in Home Assistant.
+# Requires:      ids relay, bcurrent, bpower; api (HA notifications); i18n/en.yaml. Not needed with relay-protection.yaml.
+# Chip:          any
+# Substitutions:
+#   cutoff_max_current: 10   - A, relay switches off above this current
+#   cutoff_max_power:   2300 - W, relay switches off above this power
+#   cutoff_device_name: Plug - used in the notification title
+substitutions:
+  cutoff_max_current: "10"
+  cutoff_max_power: "2300"
+  cutoff_device_name: Plug
+
+sensor:
+  # copy sensors: on_value_range cannot be attached to the sub-sensors of a meter with !extend
+  - platform: copy
+    source_id: bcurrent
+    id: cutoff_current
+    internal: true
+    on_value_range:
+      - above: ${cutoff_max_current}
+        then:
+          - switch.turn_off: relay
+          - homeassistant.action:
+              action: persistent_notification.create
+              data:
+                title: "Message from ${cutoff_device_name}"
+                message: "Switched off: current exceeded ${cutoff_max_current} A"
+
+  - platform: copy
+    source_id: bpower
+    id: cutoff_power
+    internal: true
+    on_value_range:
+      - above: ${cutoff_max_power}
+        then:
+          - switch.turn_off: relay
+          - homeassistant.action:
+              action: persistent_notification.create
+              data:
+                title: "Message from ${cutoff_device_name}"
+                message: "Switched off: power exceeded ${cutoff_max_power} W"

@@ -1,0 +1,15 @@
+esphome:
+  name: example-diag-pico
+
+wifi:
+  ap:
+
+logger:
+
+
+packages:
+  board: github://OWNER/ioxys-esphome/hardware/boards/rp2040.yaml@v0.0.0
+  i18n: github://OWNER/ioxys-esphome/i18n/en.yaml@v0.0.0
+  uptime: github://OWNER/ioxys-esphome/hardware/diagnostics/uptime.yaml@v0.0.0
+  wifi: github://OWNER/ioxys-esphome/hardware/diagnostics/wifi.yaml@v0.0.0
+  pico: github://OWNER/ioxys-esphome/hardware/diagnostics/pico.yaml@v0.0.0

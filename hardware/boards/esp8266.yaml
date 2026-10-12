@@ -1,0 +1,10 @@
+# Purpose:       ESP8266 platform and board selection.
+# Requires:      none
+# Chip:          esp8266
+# Substitutions:
+#   esp8266_board: esp01_1m - PlatformIO board name
+substitutions:
+  esp8266_board: esp01_1m
+
+esp8266:
+  board: ${esp8266_board}

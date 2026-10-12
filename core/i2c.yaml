@@ -1,0 +1,22 @@
+# Purpose:       I2C bus with a configurable id. Sensor packages refer to it by id (default i2c_bus).
+# Requires:      none
+# Chip:          any
+# Substitutions:
+#   i2c_id:        i2c_bus - bus id used by the sensor packages
+#   i2c_sda:       GPIO21
+#   i2c_scl:       GPIO22
+#   i2c_scan:      true    - log the devices found at boot
+#   i2c_frequency: 100kHz
+substitutions:
+  i2c_id: i2c_bus
+  i2c_sda: GPIO21
+  i2c_scl: GPIO22
+  i2c_scan: "true"
+  i2c_frequency: 100kHz
+
+i2c:
+  id: ${i2c_id}
+  sda: ${i2c_sda}
+  scl: ${i2c_scl}
+  scan: ${i2c_scan}
+  frequency: ${i2c_frequency}

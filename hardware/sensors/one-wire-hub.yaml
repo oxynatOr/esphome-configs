@@ -1,0 +1,14 @@
+# Purpose:       1-Wire bus on a GPIO pin (hub for DS18B20 temperature sensors).
+# Requires:      none
+# Chip:          any
+# Substitutions:
+#   one_wire_pin: GPIO4         - data pin of the bus (4.7k pull-up to 3.3V)
+#   one_wire_id:  one_wire_hub  - id referenced by ds18b20.yaml
+substitutions:
+  one_wire_pin: GPIO4
+  one_wire_id: one_wire_hub
+
+one_wire:
+  - platform: gpio
+    pin: ${one_wire_pin}
+    id: ${one_wire_id}

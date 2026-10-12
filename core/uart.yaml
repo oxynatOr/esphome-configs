@@ -1,0 +1,25 @@
+# Purpose:       UART with a configurable id and pins.
+# Requires:      none
+# Chip:          any
+# Substitutions:
+#   uart_id:        uart_bus
+#   uart_rx:        GPIO16
+#   uart_tx:        GPIO17
+#   uart_data_bits: 8
+#   uart_parity:    NONE
+#   uart_baud_rate: 9600
+substitutions:
+  uart_id: uart_bus
+  uart_rx: GPIO16
+  uart_tx: GPIO17
+  uart_data_bits: "8"
+  uart_parity: NONE
+  uart_baud_rate: "9600"
+
+uart:
+  id: ${uart_id}
+  rx_pin: ${uart_rx}
+  tx_pin: ${uart_tx}
+  data_bits: ${uart_data_bits}
+  parity: ${uart_parity}
+  baud_rate: ${uart_baud_rate}

@@ -1,0 +1,46 @@
+# Purpose:       System status for the status LED: Wi-Fi lost, no API client, OTA running; pre-warning and night mode flags.
+# Requires:      core/ota.yaml (extends the ota entry with id ota_esphome)
+# Chip:          any
+# Substitutions: none
+
+globals:
+  - id: system_status
+    type: int
+    restore_value: false
+    initial_value: "0" # 0=OK, 1=no Wi-Fi, 2=no API client, 3=OTA update
+
+  # Pre-warning is held for 1.5 s after the last sample above the warn level
+  - id: warn_hold_until
+    type: uint32_t
+    restore_value: false
+    initial_value: "0"
+
+  # Night mode is active (set by an optional night add-on; stays false without it)
+  - id: night_active
+    type: bool
+    restore_value: false
+    initial_value: "false"
+
+wifi:
+  on_connect:
+    - lambda: |-
+        if (id(system_status) == 1) id(system_status) = 0;
+  on_disconnect:
+    - lambda: |-
+        id(system_status) = 1;
+
+api:
+  on_client_connected:
+    - lambda: |-
+        if (id(system_status) == 2) id(system_status) = 0;
+  on_client_disconnected:
+    - lambda: |-
+        // do not overwrite the Wi-Fi (1) and OTA (3) states
+        if (id(system_status) == 0) id(system_status) = 2;
+
+ota:
+  - id: !extend ota_esphome
+    on_state_change:
+      - lambda: |-
+          if (state == esphome::ota::OTA_STARTED) id(system_status) = 3;
+          if (state == esphome::ota::OTA_COMPLETED || state == esphome::ota::OTA_ERROR) id(system_status) = 0;

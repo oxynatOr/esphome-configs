@@ -1,0 +1,24 @@
+# Purpose:       Named colours in the softer Flat UI palette for displays: color_red, color_blue, ...
+# Requires:      none
+# Chip:          any
+# Substitutions: none
+# Note:          use INSTEAD of colors-basic.yaml, both define the same ids.
+color:
+  - id: color_red
+    hex: C0392B
+  - id: color_blue
+    hex: 2980B9
+  - id: color_yellow
+    hex: F1C40F
+  - id: color_green
+    hex: 2ECC71
+  - id: color_cyan
+    hex: 1ABC9C
+  - id: color_white
+    hex: FFFFFF
+  - id: color_magenta
+    hex: D80073
+  - id: color_gold
+    hex: E67E22
+  - id: color_purple
+    hex: 9B59B6

@@ -1,0 +1,40 @@
+# Purpose:       NTC temperature sensor on an ADC pin with a 10k divider (ids ntc_temp, temp_resistance_reading, temp_analog_reading).
+# Requires:      i18n/en.yaml
+# Chip:          esp32 (adc attenuation)
+# Substitutions:
+#   ntc_pin: GPIO1 - ADC pin, set by the plug revision
+#   ntc_b_constant: 3950 - B constant of the NTC (Plug M 3950, Plug S 3350)
+#   ntc_attenuation: 12db - ADC attenuation
+#   ntc_update_interval: 1s
+substitutions:
+  ntc_pin: GPIO1
+  ntc_b_constant: "3950"
+  ntc_attenuation: 12db
+  ntc_update_interval: 1s
+
+sensor:
+  - platform: ntc
+    id: ntc_temp
+    sensor: temp_resistance_reading
+    name: ${txt_ntc_temperature}
+    unit_of_measurement: "°C"
+    accuracy_decimals: 1
+    icon: mdi:thermometer
+    device_class: temperature
+    state_class: measurement
+    calibration:
+      b_constant: ${ntc_b_constant}
+      reference_resistance: 10kOhm
+      reference_temperature: 298.15K
+
+  - platform: resistance
+    id: temp_resistance_reading
+    sensor: temp_analog_reading
+    configuration: DOWNSTREAM
+    resistor: 10kOhm
+
+  - platform: adc
+    id: temp_analog_reading
+    pin: ${ntc_pin}
+    update_interval: ${ntc_update_interval}
+    attenuation: ${ntc_attenuation}

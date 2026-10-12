@@ -1,0 +1,65 @@
+# Purpose:       NOUS A1T smart plug (ESP8266): relay, button, status LED, HLW8012/BL0937 meter.
+# Requires:      i18n/en.yaml
+# Chip:          esp8266
+# Substitutions:
+#   nous_a1t_restore_mode: RESTORE_DEFAULT_ON - relay state after power loss
+#   hlw8012_*: pins and calibration, see power-monitoring/hlw8012.yaml (calibrate for your unit)
+substitutions:
+  nous_a1t_restore_mode: RESTORE_DEFAULT_ON
+  hlw8012_sel_pin: GPIO12
+  hlw8012_cf_pin: GPIO4
+  hlw8012_cf1_pin: GPIO5
+
+packages:
+  board: github://OWNER/ioxys-esphome/hardware/boards/esp8266.yaml@v0.0.0
+  meter: github://OWNER/ioxys-esphome/hardware/power-monitoring/hlw8012.yaml@v0.0.0
+
+light:
+  - platform: status_led
+    id: led
+    pin:
+      number: GPIO13
+      inverted: true
+
+binary_sensor:
+  - platform: status
+    name: ${txt_nous_a1t_status}
+
+  # toggle relay on/off
+  - platform: gpio
+    pin:
+      number: GPIO0
+      mode: INPUT_PULLUP
+    id: button_state
+    on_press:
+      - switch.toggle: button_switch
+
+switch:
+  - platform: template
+    restore_mode: ${nous_a1t_restore_mode}
+    name: ${txt_nous_a1t_switch}
+    icon: mdi:power
+    optimistic: true
+    id: button_switch
+    lambda: |-
+      if (id(relay).state) {
+        return true;
+      } else {
+        return false;
+      }
+    turn_on_action:
+      - switch.turn_on: relay
+      - light.turn_on: led
+    turn_off_action:
+      - switch.turn_off: relay
+      - light.turn_off: led
+  - platform: gpio
+    pin: GPIO14
+    restore_mode: ${nous_a1t_restore_mode}
+    id: relay
+
+sensor:
+  - platform: adc
+    pin: VCC
+    name: ${txt_nous_a1t_vcc_volt}
+    icon: mdi:flash-outline

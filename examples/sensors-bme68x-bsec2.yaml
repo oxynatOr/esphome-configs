@@ -1,0 +1,17 @@
+esphome:
+  name: example-bme68x
+
+wifi:
+  ap:
+
+logger:
+
+i2c:
+  id: i2c_bus
+  sda: GPIO21
+  scl: GPIO22
+
+packages:
+  board: github://OWNER/ioxys-esphome/hardware/boards/esp32.yaml@v0.0.0
+  i18n: github://OWNER/ioxys-esphome/i18n/en.yaml@v0.0.0
+  bme68x-bsec2: github://OWNER/ioxys-esphome/hardware/sensors/bme68x-bsec2.yaml@v0.0.0

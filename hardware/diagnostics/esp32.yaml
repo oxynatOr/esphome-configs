@@ -1,0 +1,36 @@
+# Purpose:       ESP32 diagnostics: free internal heap (kB and percent) and chip temperature.
+# Requires:      i18n/en.yaml
+# Chip:          esp32 (esp-idf; not for esp8266/rp2040)
+# Substitutions:
+#   diag_esp_memory_update_interval:      60s
+#   diag_esp_temperature_update_interval: 60s
+substitutions:
+  diag_esp_memory_update_interval: 60s
+  diag_esp_temperature_update_interval: 60s
+
+sensor:
+  - platform: template
+    id: esp_memory_percent
+    icon: mdi:memory
+    name: ${txt_esp_free_memory_percent}
+    lambda: return heap_caps_get_free_size(MALLOC_CAP_INTERNAL) * 100.0f / heap_caps_get_total_size(MALLOC_CAP_INTERNAL);
+    unit_of_measurement: "%"
+    state_class: measurement
+    entity_category: diagnostic
+    update_interval: ${diag_esp_memory_update_interval}
+
+  - platform: template
+    id: esp_memory
+    icon: mdi:memory
+    name: ${txt_esp_free_memory}
+    lambda: return heap_caps_get_free_size(MALLOC_CAP_INTERNAL) / 1024;
+    unit_of_measurement: kB
+    state_class: measurement
+    entity_category: diagnostic
+    update_interval: ${diag_esp_memory_update_interval}
+
+  - platform: internal_temperature
+    name: ${txt_esp_temperature}
+    id: sys_esp_temperature
+    entity_category: diagnostic
+    update_interval: ${diag_esp_temperature_update_interval}

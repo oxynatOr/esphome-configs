@@ -1,0 +1,67 @@
+# Purpose:       Gosund SP1 smart plug (ESP8285): relay, button, blue state LED, red status LED, HLW8012 meter.
+# Requires:      i18n/en.yaml
+# Chip:          esp8266 (esp8285)
+# Substitutions:
+#   gosund_sp1_restore_mode: RESTORE_DEFAULT_ON - relay state after power loss
+#   gosund_sp1_relay_pin / button_pin: GPIO14 / GPIO3
+#   gosund_sp1_blue_led_pin / red_led_pin: GPIO1 / GPIO13
+#   hlw8012_*: pins GPIO12/GPIO4/GPIO5 and calibration 0.00221 / 871 (values found online, calibrate your unit)
+# Source:        pinout and calibration from https://devices.esphome.io/devices/Gosund-SP1
+substitutions:
+  gosund_sp1_restore_mode: RESTORE_DEFAULT_ON
+  gosund_sp1_relay_pin: GPIO14
+  gosund_sp1_button_pin: GPIO3
+  gosund_sp1_blue_led_pin: GPIO1
+  gosund_sp1_red_led_pin: GPIO13
+  esp8266_board: esp8285
+  hlw8012_sel_pin: GPIO12
+  hlw8012_cf_pin: GPIO4
+  hlw8012_cf1_pin: GPIO5
+  hlw8012_change_mode_every: "8"
+  hlw8012_current_resistor: "0.00221"
+  hlw8012_voltage_divider: "871"
+
+packages:
+  board: github://OWNER/ioxys-esphome/hardware/boards/esp8266.yaml@v0.0.0
+  meter: github://OWNER/ioxys-esphome/hardware/power-monitoring/hlw8012.yaml@v0.0.0
+
+binary_sensor:
+  - platform: gpio
+    name: ${txt_gosund_sp1_power_button}
+    id: button
+    pin:
+      number: ${gosund_sp1_button_pin}
+      inverted: true
+    on_press:
+      - switch.toggle: relay
+
+switch:
+  - platform: gpio
+    id: relay
+    name: ${txt_gosund_sp1_power_switch}
+    icon: mdi:power
+    pin: ${gosund_sp1_relay_pin}
+    restore_mode: ${gosund_sp1_restore_mode}
+    on_turn_on:
+      - light.turn_on: led
+      - light.turn_off: red_led
+    on_turn_off:
+      - light.turn_off: led
+      - light.turn_on: red_led
+
+output:
+  - platform: esp8266_pwm
+    id: blue_led_output
+    pin:
+      number: ${gosund_sp1_blue_led_pin}
+      inverted: true
+
+light:
+  - platform: monochromatic
+    output: blue_led_output
+    id: led
+  - platform: status_led
+    id: red_led
+    pin:
+      number: ${gosund_sp1_red_led_pin}
+      inverted: true
