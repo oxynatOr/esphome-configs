@@ -1,0 +1,29 @@
+# Purpose:       Shelly Multicolor Bulb E27 Gen3: RGB and colour temperature light (2700-6500 K) with Home Assistant time. Adoptable in the ESPHome dashboard.
+# Requires:      all packages below, i18n/en.yaml
+# Chip:          esp32-c3
+# Substitutions: none (optional packages: hardware/lights/effects/*.yaml and hardware/lights/multicolor-bulb/{overtemp,dim-range}.yaml, see examples/multicolor-bulb-full.yaml)
+esphome:
+  name: multicolor-bulb-v3
+  friendly_name: Shelly Multicolor Bulb Gen3
+  project:
+    name: "ioxys.multicolor-bulb-v3"
+    version: "0.1.0"
+
+dashboard_import:
+  package_import_url: github://oxynatOr/esphome-configs/projects/multicolor-bulb/v3.yaml@v0.1.0
+  import_full_config: false
+
+wifi:
+  ap:
+
+captive_portal:
+
+packages:
+  i18n_base: github://oxynatOr/esphome-configs/i18n/en.yaml@v0.1.0
+  hardware: github://oxynatOr/esphome-configs/hardware/lights/multicolor-bulb/v3.yaml@v0.1.0
+  logger: github://oxynatOr/esphome-configs/core/logger.yaml@v0.1.0
+  api: github://oxynatOr/esphome-configs/core/api.yaml@v0.1.0
+  ota: github://oxynatOr/esphome-configs/core/ota.yaml@v0.1.0
+  safe_mode: github://oxynatOr/esphome-configs/core/safe-mode.yaml@v0.1.0
+  time: github://oxynatOr/esphome-configs/core/time-homeassistant.yaml@v0.1.0
+  diag_wifi: github://oxynatOr/esphome-configs/hardware/diagnostics/wifi.yaml@v0.1.0

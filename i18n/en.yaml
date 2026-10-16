@@ -178,3 +178,29 @@ substitutions:
   txt_meross_led_green: LED Green
   txt_bmp280_temperature: Temperature
   txt_bmp280_pressure: Pressure
+  txt_strip_outlet: Outlet
+  txt_strip_voltage: Voltage
+  txt_strip_frequency: AC Frequency
+  txt_strip_current: Current
+  txt_strip_power: Power
+  txt_strip_button: Button
+  txt_strip_led: LED
+  txt_strip_led_strip: LED Strip
+  txt_light_main: Light
+  txt_light_chip_temperature: Chip temperature
+  txt_light_brightness_limit: Brightness limit
+  txt_light_overtemperature: Overtemperature
+  txt_light_effect_daylight: Daylight
+  txt_light_effect_daylight_sun: Daylight (sun)
+  txt_light_effect_night_time: Night (time)
+  txt_light_effect_night_sun: Night (sun)
+  txt_light_effect_relax: Relax
+  txt_light_effect_reading: Reading
+  txt_light_effect_focus: Focus
+  txt_light_effect_energize: Energize
+  txt_light_effect_sunset: Sunset
+  txt_light_effect_night_light: Night light
+  txt_light_effect_candle: Candle
+  txt_light_wake_alarm: Wake alarm
+  txt_light_wake_start: Sunrise start
+  txt_light_wake_stop: Sunrise stop

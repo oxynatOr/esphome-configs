@@ -1,0 +1,12 @@
+# multicolor-bulb with every optional package. Local includes keep the example runnable before the repository is tagged.
+# Set daylight_lat / daylight_lon to your own coordinates before you use daylight-sun.yaml.
+packages:
+  base: !include ../projects/multicolor-bulb/v3.yaml
+  daylight: !include ../hardware/lights/effects/daylight.yaml
+  daylight_sun: !include ../hardware/lights/effects/daylight-sun.yaml
+  night: !include ../hardware/lights/effects/night.yaml
+  night_sun: !include ../hardware/lights/effects/night-sun.yaml
+  scenes: !include ../hardware/lights/effects/scenes.yaml
+  wakeup: !include ../hardware/lights/effects/wakeup.yaml
+  overtemp: !include ../hardware/lights/multicolor-bulb/overtemp.yaml
+  dim_range: !include ../hardware/lights/multicolor-bulb/dim-range.yaml

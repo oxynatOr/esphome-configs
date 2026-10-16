@@ -13,7 +13,7 @@ mechanically; whatever it cannot catch is checked in review.
 6. Real calibration values, personal entity ids or credentials of one device -> never here, keep them in the private repo.
 
 Function folders in `hardware/`: `boards`, `sensors`, `diagnostics`, `power-monitoring`, `controllers`, `batteries`,
-`meters`, `plugs` (`common`, `addons`, `<model>/<revision>`), `ui-elements`.
+`meters`, `plugs` (`common`, `addons`, `<model>/<revision>`; the Power Strip lives here too), `lights` (`effects`, `<model>/<revision>`), `ui-elements`.
 Use `python scripts/gen-catalog.py` output (`docs/CATALOG.md`) to see what already exists before adding a new file.
 
 ## Variants
@@ -29,7 +29,8 @@ Use `python scripts/gen-catalog.py` output (`docs/CATALOG.md`) to see what alrea
 - User-visible texts: substitutions `txt_<module>_<name>`, defined in `i18n/`.
 - `esphome.project.name`: `ioxys.<kebab-name>-<revision>`, one per adoptable file.
 - Contract ids that a device family shares (plugs): `relay`, `bvoltage`, `bcurrent`, `bpower`, `benergy`, `ntc_temp`,
-  `temp_analog_reading`, `rgb_lights`, `fault_lock`. Modules rely on them; do not rename.
+  `temp_analog_reading`, `rgb_lights`, `fault_lock`. Lights: the light is `bulb`, the time is `homeassistant_time` (core/time-homeassistant.yaml), the sun
+  is `ha_sun` (lights/effects/daylight-sun.yaml). Modules rely on them; do not rename.
 
 ## File layout
 - Every file starts with the header block (within the first 15 lines):

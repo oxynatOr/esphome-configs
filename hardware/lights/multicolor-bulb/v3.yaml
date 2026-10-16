@@ -1,0 +1,84 @@
+# Purpose:       Shelly Multicolor Bulb E27 Gen3 hardware: ESP32-C3, KP18068 LED driver on two pins, RGB and colour temperature light with the stock firmware's table.
+# Requires:      i18n/en.yaml
+# Chip:          esp32-c3
+# Substitutions:
+#   bulb_data_pin / bulb_clock_pin: GPIO4 / GPIO5 - the driver's SDA / SCL, bit-banged by the component (no i2c: block, the pins belong to it)
+#   bulb_rgb_current / bulb_cw_current: 9 / 27.5 - driver current in mA, the codes 5 and 11 that the stock firmware sends
+#   bulb_gamma: 1.0 - linear like the stock firmware; ESPHome's default 2.8 makes the lowest steps much darker (then add dim-range.yaml)
+#   bulb_transition: 3s - default fade, the stock firmware's transition_duration
+#
+# Runs on a real bulb (owner, 2026-10-11 and 2026-10-16): channel order OUT1 blue, OUT2 red, OUT3 green, OUT4 warm white (OUT5 lights nothing
+# on its own). Not measured: colour accuracy against the stock firmware, the lowest dimming steps, the driver currents. The component is not
+# part of ESPHome; the pinned commit below is the published main of oxynatOr/esphome-kp18058 on 2026-10-16 (components kp18058 and rgbw_ct_table).
+# The bulb first ran an earlier local build of the component, so the pinned code itself has not been run on it.
+# Two exclusive modes, like the Color and White tabs of the stock web UI: RGB (each colour scaled by the stock white balance 0.856 / 0.701 /
+# 0.749, white off) and colour temperature 2700-6500 K (stock calibration table, 10-bit levels, interpolated; the gains are not applied there).
+# Stock turns the lamp ON at power-up; the ESPHome default for a light is OFF (set restore_mode on the light if you want it).
+substitutions:
+  bulb_data_pin: GPIO4
+  bulb_clock_pin: GPIO5
+  bulb_rgb_current: "9"
+  bulb_cw_current: "27.5"
+  bulb_gamma: "1.0"
+  bulb_transition: 3s
+
+esp32:
+  board: esp32-c3-devkitm-1
+  variant: esp32c3
+  flash_size: 8MB
+  framework:
+    type: esp-idf
+
+external_components:
+  - source: github://oxynatOr/esphome-kp18058@363f084f92f96875f13b86d5e7ac71d9acde9410
+    components: [kp18058, rgbw_ct_table]
+
+# Values as the Shelly firmware sends them: RGB current code 5 (= 9 mA), white current code 11 (= 27.5 mA), analog dimming, 4 kHz.
+kp18058:
+  id: led_driver
+  data_pin: ${bulb_data_pin}
+  clock_pin: ${bulb_clock_pin}
+  rgb_current: ${bulb_rgb_current}
+  cw_current: ${bulb_cw_current}
+  rgb_dimming: analog
+  chop_frequency: 4khz
+
+# Channel order from the Shelly firmware: OUT1 = blue, OUT2 = red, OUT3 = green. OUT4 and OUT5 always get the same value
+# (one white level): there is only one warm white LED, the stock firmware makes the other colour temperatures by mixing red, green and blue into it.
+output:
+  - {platform: kp18058, id: out_b, channel: 1}
+  - {platform: kp18058, id: out_r, channel: 2}
+  - {platform: kp18058, id: out_g, channel: 3}
+  - {platform: kp18058, id: out_w4, channel: 4}
+  - {platform: kp18058, id: out_w5, channel: 5}
+  - platform: template        # drives OUT4 and OUT5 together
+    id: out_white
+    type: float
+    write_action:
+      - output.set_level: {id: out_w4, level: !lambda "return state;"}
+      - output.set_level: {id: out_w5, level: !lambda "return state;"}
+
+light:
+  - platform: rgbw_ct_table
+    id: bulb
+    name: ${txt_light_main}
+    red: out_r
+    green: out_g
+    blue: out_b
+    white: out_white
+    gamma_correct: ${bulb_gamma}
+    default_transition_length: ${bulb_transition}
+    red_gain: 0.856
+    green_gain: 0.701
+    blue_gain: 0.749
+    table_max: 1023
+    color_temperature_table:
+      - {kelvin: 2700, red: 0, green: 0, blue: 0, white: 1023}
+      - {kelvin: 3000, red: 325, green: 314, blue: 86, white: 635}
+      - {kelvin: 3500, red: 314, green: 373, blue: 112, white: 483}
+      - {kelvin: 4000, red: 361, green: 511, blue: 182, white: 451}
+      - {kelvin: 4500, red: 100, green: 600, blue: 220, white: 494}
+      - {kelvin: 5000, red: 17, green: 650, blue: 240, white: 490}
+      - {kelvin: 5700, red: 0, green: 662, blue: 267, white: 441}
+      - {kelvin: 6000, red: 0, green: 659, blue: 325, white: 426}
+      - {kelvin: 6500, red: 0, green: 659, blue: 366, white: 425}

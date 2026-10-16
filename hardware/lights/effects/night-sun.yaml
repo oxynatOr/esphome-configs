@@ -1,0 +1,35 @@
+# Purpose:       Light effect "Night (sun)": a dim warm light while the sun is below a given height. UNTESTED on the bulb.
+# Requires:      a light with id bulb (platform rgbw_ct_table), the sun component ha_sun from daylight-sun.yaml, core/time-homeassistant.yaml, i18n/en.yaml
+# Chip:          any
+# Substitutions:
+#   night_sun_elev:                 -4 - degrees: the night light is active below this sun height
+#   night_brightness / night_k / night_step / night_fade: 0.05 / 2700 / 60s / 3000 - as in night.yaml
+#
+# Include daylight-sun.yaml as well: it provides the sun component and your coordinates (daylight_lat / daylight_lon). The default -4 degrees is the
+# value where "Daylight (sun)" starts, so the two effects hand over to each other without a gap. Choosing a colour or brightness by hand ends the effect.
+# With gamma_correct 2.8 add dim-range.yaml or raise night_brightness to about 0.10 (see night.yaml).
+substitutions:
+  night_sun_elev: "-4"        # degrees: the night light is active below this sun height
+  night_brightness: "0.05"
+  night_k: "2700"
+  night_step: "60s"
+  night_fade: "3000"
+
+light:
+  - id: !extend bulb
+    effects:
+      - lambda:
+          name: ${txt_light_effect_night_sun}
+          update_interval: ${night_step}
+          lambda: |-
+              if (!id(homeassistant_time).now().is_valid()) { ESP_LOGW("night_sun", "time not valid yet, waiting for Home Assistant"); return; }
+              const float elev = (float) id(ha_sun).elevation();
+              if (elev >= ${night_sun_elev}) return;      // sun is up: leave the lamp alone
+              auto call = id(bulb).turn_on();
+              call.set_color_mode(esphome::light::ColorMode::COLOR_TEMPERATURE);
+              call.set_color_temperature(1000000.0f / ${night_k});
+              call.set_brightness(${night_brightness});
+              call.set_transition_length(${night_fade});
+              call.set_publish(false);
+              call.set_save(false);
+              call.perform();

@@ -1,0 +1,44 @@
+# Purpose:       Shelly Duo Bulb E27 Gen3 hardware: ESP32-C3, warm and cold white LEDs on two PWM pins.
+# Requires:      i18n/en.yaml
+# Chip:          esp32-c3
+# Substitutions:
+#   duo_warm_pin / duo_cold_pin: GPIO4 / GPIO5 - LEDC channel 0 (warm) and 1 (cold), not inverted
+#   duo_pwm_frequency: 1000Hz - the stock firmware uses 1 kHz
+#   duo_warm_ct / duo_cold_ct: 2700 K / 6500 K - the stock firmware's colour temperature range
+#
+# Pins, PWM frequency, polarity and the colour temperature range were read from the stock 2.0.1 firmware (static analysis, not measured). The owner
+# flashed ESPHome over UART and it runs; the OTA route from the stock firmware was not run on this device yet. If full brightness is dark, the
+# outputs are inverted on your unit: add `inverted: true` to the pins.
+substitutions:
+  duo_warm_pin: GPIO4
+  duo_cold_pin: GPIO5
+  duo_pwm_frequency: 1000Hz
+  duo_warm_ct: 2700 K
+  duo_cold_ct: 6500 K
+
+esp32:
+  board: esp32-c3-devkitm-1
+  variant: esp32c3
+  flash_size: 8MB
+  framework:
+    type: esp-idf
+
+output:
+  - platform: ledc
+    id: warm_pwm
+    pin: ${duo_warm_pin}
+    frequency: ${duo_pwm_frequency}
+  - platform: ledc
+    id: cold_pwm
+    pin: ${duo_cold_pin}
+    frequency: ${duo_pwm_frequency}
+
+light:
+  - platform: cwww
+    id: bulb
+    name: ${txt_light_main}
+    warm_white: warm_pwm
+    cold_white: cold_pwm
+    warm_white_color_temperature: ${duo_warm_ct}
+    cold_white_color_temperature: ${duo_cold_ct}
+    constant_brightness: true
