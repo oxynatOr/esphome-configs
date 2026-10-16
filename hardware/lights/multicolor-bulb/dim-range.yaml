@@ -1,0 +1,40 @@
+# Purpose:       Dim range for the Multicolor Bulb: raises the lowest non-zero output and caps the top. Only needed with gamma_correct 2.8. UNTESTED.
+# Requires:      multicolor-bulb/v3.yaml (outputs out_r, out_g, out_b, out_w4, out_w5)
+# Chip:          esp32-c3
+# Substitutions:
+#   dim_range_min_rgb:   0.002 - lowest non-zero level of the colour outputs (fraction of the maximum LED current; 0.001 is one driver step)
+#   dim_range_min_white: 0.002 - the same for the white outputs
+#   dim_range_max:       1.0 - top of the range for all outputs (0..1), e.g. to save power or heat
+#
+# The LED driver has 10 bits (0..1023). The bulb module uses gamma_correct 1.0 (linear, like the stock firmware), so 1 % is already about 10 steps and this
+# package is NOT needed for a night light. It matters with gamma_correct 2.8: then a slider value below about 8 % is below one step and rounds to ZERO
+# (the lamp stays dark). A value of exactly 0 stays off. min_power / max_power act on the final outputs, i.e. also on the colour temperature table
+# values, which is what you want for a floor and a ceiling. Do NOT use max_power for the RGB white balance (use red_gain / green_gain / blue_gain of the
+# light: they are not applied in colour temperature mode). Raise a minimum if the lamp does not light at the lowest values, lower it if the lowest value
+# is too bright. White and colour are separate because the driver runs them with different currents (rgb_current / cw_current in v3.yaml).
+substitutions:
+  dim_range_min_rgb: "0.002"
+  dim_range_min_white: "0.002"
+  dim_range_max: "1.0"              # 0..1, top of the range for all outputs
+
+output:
+  - id: !extend out_r
+    min_power: ${dim_range_min_rgb}
+    max_power: ${dim_range_max}
+    zero_means_zero: true
+  - id: !extend out_g
+    min_power: ${dim_range_min_rgb}
+    max_power: ${dim_range_max}
+    zero_means_zero: true
+  - id: !extend out_b
+    min_power: ${dim_range_min_rgb}
+    max_power: ${dim_range_max}
+    zero_means_zero: true
+  - id: !extend out_w4
+    min_power: ${dim_range_min_white}
+    max_power: ${dim_range_max}
+    zero_means_zero: true
+  - id: !extend out_w5
+    min_power: ${dim_range_min_white}
+    max_power: ${dim_range_max}
+    zero_means_zero: true

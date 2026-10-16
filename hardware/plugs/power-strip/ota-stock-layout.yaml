@@ -1,0 +1,25 @@
+# Purpose:       Makes the firmware installable via OTA from the stock Shelly firmware (partition layout, Power Strip 4 Gen4).
+# Requires:      power-strip/v4.yaml
+# Chip:          esp32-c6
+# Substitutions: none
+#
+# Additional config: makes the firmware installable via OTA from the stock Shelly firmware (Free-Shelly-OTA, profile PowerStrip).
+# Merge it into config.yaml, e.g. with `packages:`.
+# Needs PowerStrip-stock.csv (Shelly's stock partition layout) next to your YAML file:
+#   python ota.py partition-csv PowerStrip -o PowerStrip-stock.csv
+esp32:
+  flash_size: 8MB
+  partitions: PowerStrip-stock.csv
+  framework:
+    type: esp-idf
+    sdkconfig_options:
+      COMPILER_OPTIMIZATION_SIZE: y
+      # The stock Shelly keeps the partition table at 0x10000 on this model, not at the IDF default 0x8000.
+      # Without this the firmware installs but cannot find its partitions at boot.
+      CONFIG_PARTITION_TABLE_OFFSET: "0x10000"
+    advanced:
+      enable_ota_rollback: false
+
+ota:
+  - id: !extend ota_esphome # the entry of core/ota.yaml; the project includes it
+    allow_partition_access: true

@@ -1,0 +1,105 @@
+# Purpose:       Light scenes as effects: Relax, Reading, Focus, Energize, Sunset, Night light, Candle. UNTESTED on the bulb, values are starting points.
+# Requires:      a light with id bulb (platform rgbw_ct_table), i18n/en.yaml
+# Chip:          any
+# Substitutions: none (edit the numbers in the lambda of a scene to change it)
+#
+# Pick the scene as an effect of the light in Home Assistant. The light has two exclusive modes (like the stock firmware): colour temperature
+# (2700-6500 K) and RGB. Each white scene sets a colour temperature in kelvin and a brightness (0..1); the two coloured scenes ("Sunset", "Candle")
+# set an RGB colour. Choosing a colour or brightness by hand stops the effect. A scene is re-applied every 60 s (same values, no visible change).
+light:
+  - id: !extend bulb
+    effects:
+      - lambda:
+          name: ${txt_light_effect_relax}       # very warm, dim
+          update_interval: 60s
+          lambda: |-
+            auto call = id(bulb).turn_on();
+            call.set_color_mode(esphome::light::ColorMode::COLOR_TEMPERATURE);
+            call.set_color_temperature(1000000.0f / 2700.0f);
+            call.set_brightness(0.35);
+            call.set_transition_length(1500);
+            call.set_publish(false);
+            call.set_save(false);
+            call.perform();
+      - lambda:
+          name: ${txt_light_effect_reading}       # neutral warm white, bright
+          update_interval: 60s
+          lambda: |-
+            auto call = id(bulb).turn_on();
+            call.set_color_mode(esphome::light::ColorMode::COLOR_TEMPERATURE);
+            call.set_color_temperature(1000000.0f / 3500.0f);
+            call.set_brightness(0.85);
+            call.set_transition_length(1500);
+            call.set_publish(false);
+            call.set_save(false);
+            call.perform();
+      - lambda:
+          name: ${txt_light_effect_focus}       # cool and bright (like the middle of the day)
+          update_interval: 60s
+          lambda: |-
+            auto call = id(bulb).turn_on();
+            call.set_color_mode(esphome::light::ColorMode::COLOR_TEMPERATURE);
+            call.set_color_temperature(1000000.0f / 5000.0f);
+            call.set_brightness(1.0);
+            call.set_transition_length(1500);
+            call.set_publish(false);
+            call.set_save(false);
+            call.perform();
+      - lambda:
+          name: ${txt_light_effect_energize}       # coolest and brightest the lamp can do
+          update_interval: 60s
+          lambda: |-
+            auto call = id(bulb).turn_on();
+            call.set_color_mode(esphome::light::ColorMode::COLOR_TEMPERATURE);
+            call.set_color_temperature(1000000.0f / 6500.0f);
+            call.set_brightness(1.0);
+            call.set_transition_length(1500);
+            call.set_publish(false);
+            call.set_save(false);
+            call.perform();
+      - lambda:
+          name: ${txt_light_effect_sunset}       # orange-red, medium (RGB)
+          update_interval: 60s
+          lambda: |-
+            auto call = id(bulb).turn_on();
+            call.set_color_mode(esphome::light::ColorMode::RGB);
+            call.set_rgb(255/255.0f, 70/255.0f, 5/255.0f);
+            call.set_color_brightness(1.0);
+            call.set_brightness(0.45);
+            call.set_transition_length(1500);
+            call.set_publish(false);
+            call.set_save(false);
+            call.perform();
+      - lambda:
+          name: ${txt_light_effect_night_light}       # very dim warm white
+          update_interval: 60s
+          lambda: |-
+            auto call = id(bulb).turn_on();
+            call.set_color_mode(esphome::light::ColorMode::COLOR_TEMPERATURE);
+            call.set_color_temperature(1000000.0f / 2700.0f);
+            call.set_brightness(0.04);
+            call.set_transition_length(1500);
+            call.set_publish(false);
+            call.set_save(false);
+            call.perform();
+      - lambda:
+          name: ${txt_light_effect_candle}       # warm flickering candle light (RGB orange); the level wanders randomly, with an occasional deep dip
+          update_interval: 100ms
+          lambda: |-
+            static float level = 0.6f, target = 0.6f;
+            static int hold = 0;
+            if (hold-- <= 0) {
+              target = 0.3f + 0.7f * random_float();           // 0.3 .. 1.0
+              if (random_float() < 0.08f) target = 0.12f;      // rare deep dip
+              hold = 1 + (int) (random_float() * 4);           // keep the target for 1..5 steps
+            }
+            level += (target - level) * 0.5f;
+            auto call = id(bulb).turn_on();
+            call.set_color_mode(esphome::light::ColorMode::RGB);
+            call.set_rgb(255 / 255.0f, 95 / 255.0f, 14 / 255.0f);
+            call.set_color_brightness(1.0f);
+            call.set_brightness(0.10f + 0.40f * level);        // never brighter than about half
+            call.set_transition_length(80);
+            call.set_publish(false);
+            call.set_save(false);
+            call.perform();
