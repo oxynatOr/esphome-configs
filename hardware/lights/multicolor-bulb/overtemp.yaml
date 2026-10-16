@@ -24,27 +24,27 @@ substitutions:
 globals:
   - id: ot_factor
     type: float
-    restore_value: no
+    restore_value: false
     initial_value: "1.0"
   - id: ot_tripped
     type: bool
-    restore_value: no
+    restore_value: false
     initial_value: "false"
   - id: ot_r
     type: float
-    restore_value: no
+    restore_value: false
     initial_value: "0.0"
   - id: ot_g
     type: float
-    restore_value: no
+    restore_value: false
     initial_value: "0.0"
   - id: ot_b
     type: float
-    restore_value: no
+    restore_value: false
     initial_value: "0.0"
   - id: ot_w
     type: float
-    restore_value: no
+    restore_value: false
     initial_value: "0.0"
 
 # The light writes to these outputs; they scale the level and pass it on to the real outputs of the main file.

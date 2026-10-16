@@ -73,12 +73,12 @@ light:
     blue_gain: 0.749
     table_max: 1023
     color_temperature_table:
-      - {kelvin: 2700, red: 0,   green: 0,   blue: 0,   white: 1023}
-      - {kelvin: 3000, red: 325, green: 314, blue: 86,  white: 635}
+      - {kelvin: 2700, red: 0, green: 0, blue: 0, white: 1023}
+      - {kelvin: 3000, red: 325, green: 314, blue: 86, white: 635}
       - {kelvin: 3500, red: 314, green: 373, blue: 112, white: 483}
       - {kelvin: 4000, red: 361, green: 511, blue: 182, white: 451}
       - {kelvin: 4500, red: 100, green: 600, blue: 220, white: 494}
-      - {kelvin: 5000, red: 17,  green: 650, blue: 240, white: 490}
-      - {kelvin: 5700, red: 0,   green: 662, blue: 267, white: 441}
-      - {kelvin: 6000, red: 0,   green: 659, blue: 325, white: 426}
-      - {kelvin: 6500, red: 0,   green: 659, blue: 366, white: 425}
+      - {kelvin: 5000, red: 17, green: 650, blue: 240, white: 490}
+      - {kelvin: 5700, red: 0, green: 662, blue: 267, white: 441}
+      - {kelvin: 6000, red: 0, green: 659, blue: 325, white: 426}
+      - {kelvin: 6500, red: 0, green: 659, blue: 366, white: 425}
