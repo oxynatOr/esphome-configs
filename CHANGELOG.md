@@ -15,6 +15,11 @@ All notable changes are listed here. Versions follow SemVer, tags look like `v1.
 - Texts for these devices in `i18n/en.yaml` (`txt_strip_*`, `txt_light_*`, effect names included). No German overrides yet.
 - Documents `docs/power-strip-v4.md`, `docs/multicolor-bulb-v3.md` and `docs/duo-bulb-v3.md` (pins, status, what is untested).
 
+### Fixed
+- `hardware/plugs/plug-m/ota-stock-layout.yaml`: together with the project it failed with "ID ota_esphome redefined" (a second `platform: esphome` entry does not merge
+  with the one of `core/ota.yaml`). It extends that entry now (`- id: !extend ota_esphome`) and only adds `allow_partition_access: true`, as the stock layouts of the
+  Power Strip and the bulbs do.
+
 ## [0.1.0] - 2026-10-12
 
 ### Added
