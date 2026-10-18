@@ -18,6 +18,5 @@ esp32:
       CONFIG_PARTITION_TABLE_OFFSET: "0x10000"
 
 ota:
-  - platform: esphome
-    id: ota_esphome # same id as in plug-core.yaml, so both entries merge
+  - id: !extend ota_esphome # the entry of core/ota.yaml, which the project includes
     allow_partition_access: true
